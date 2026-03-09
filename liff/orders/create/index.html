@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>結帳 - Supreme Salmon</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        salmon: {
+                            50: '#fff3f1',
+                            100: '#ffe4df',
+                            500: '#ff7b65',
+                            600: '#f55a42',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Support for safe area in iOS browsers/LIFF */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased pb-48">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm px-4 py-3 flex items-center justify-between">
+        <a href="../../products/index.html" class="text-gray-600 w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors relative -left-2">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1 class="text-lg font-bold text-gray-800">結帳</h1>
+        <div class="w-8"></div> <!-- Spacer for centering title -->
+    </header>
+
+    <main class="p-3 flex flex-col gap-3">
+
+        <!-- Product Summary -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                <div class="flex items-center">
+                    <i class="fas fa-shopping-cart text-gray-400 mr-2"></i>
+                    <h3 class="font-bold text-sm text-gray-700">商品清單 (3)</h3>
+                </div>
+                <button class="text-[10px] text-salmon-600 font-medium bg-salmon-50 px-2 py-1 rounded">修改</button>
+            </div>
+            
+            <div class="p-4 space-y-4">
+                <!-- Item 1 -->
+                <div class="flex gap-3">
+                    <div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-gray-100">
+                        <img src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?auto=format&fit=crop&w=150&q=80" alt="鮭魚" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <h4 class="text-sm font-medium text-gray-800 line-clamp-1">頂級挪威鮮切鮭魚菲力</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">300g (厚切)</p>
+                        <div class="mt-auto pt-1 flex justify-between items-end">
+                            <span class="text-salmon-600 font-bold text-sm">NT$ 380</span>
+                            <span class="text-xs text-gray-500">x 2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="flex gap-3">
+                    <div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-gray-100">
+                        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=150&q=80" alt="鮭魚排" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <h4 class="text-sm font-medium text-gray-800 line-clamp-1">智利厚切鮭魚排 家庭號</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">500g</p>
+                        <div class="mt-auto pt-1 flex justify-between items-end">
+                            <span class="text-salmon-600 font-bold text-sm">NT$ 520</span>
+                            <span class="text-xs text-gray-500">x 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Form -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-truck text-salmon-500 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">收件與配送資訊</h3>
+            </div>
+            
+            <div class="p-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">收件人姓名 <span class="text-red-500">*</span></label>
+                        <input type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="真實姓名">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">聯絡電話 <span class="text-red-500">*</span></label>
+                        <input type="tel" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="09XX-XXX-XXX">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">收件地址 <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <select class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 text-gray-700 bg-gray-50 focus:bg-white appearance-none">
+                            <option value="">選擇縣市</option>
+                            <option value="TPE">台北市</option>
+                            <option value="NWT">新北市</option>
+                        </select>
+                        <select class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 text-gray-700 bg-gray-50 focus:bg-white appearance-none">
+                            <option value="">選擇區域</option>
+                            <option value="110">信義區</option>
+                            <option value="106">大安區</option>
+                        </select>
+                    </div>
+                    <input type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="詳細地址、樓層">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">希望送達區間</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors">
+                            <input type="radio" name="delivery_time" class="hidden" checked>
+                            <span class="text-[11px] font-bold">皆可</span>
+                        </label>
+                        <label class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors">
+                            <input type="radio" name="delivery_time" class="hidden">
+                            <span class="text-[11px] font-bold">13:00 前</span>
+                        </label>
+                        <label class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors">
+                            <input type="radio" name="delivery_time" class="hidden">
+                            <span class="text-[11px] font-bold">14:00 - 18:00</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">訂單備註 (選填)</label>
+                    <textarea class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white h-20 resize-none" placeholder="有沒有什麼要告訴我們的？例如：請交由管理室代收..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-credit-card text-gray-400 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">付款方式</h3>
+            </div>
+            
+            <div class="p-4 space-y-2">
+                <label class="flex items-center p-3 border border-gray-100 rounded-xl cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50/50 has-[:checked]:shadow-sm transition-all relative">
+                    <input type="radio" name="payment" class="w-4 h-4 text-salmon-500 focus:ring-salmon-500 mt-0.5 accent-salmon-500" checked>
+                    <div class="ml-3 flex-1 flex justify-between items-center">
+                        <span class="text-sm font-bold text-gray-800">線上信用卡</span>
+                        <div class="flex gap-1 text-sm text-gray-400">
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fab fa-cc-mastercard"></i>
+                            <i class="fab fa-cc-jcb"></i>
+                        </div>
+                    </div>
+                </label>
+                
+                <label class="flex items-center p-3 border border-gray-100 rounded-xl cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50/50 has-[:checked]:shadow-sm transition-all relative">
+                    <input type="radio" name="payment" class="w-4 h-4 text-salmon-500 focus:ring-salmon-500 mt-0.5 accent-salmon-500">
+                    <div class="ml-3 flex-1 flex items-center">
+                        <span class="text-sm font-bold text-gray-800">LINE Pay</span>
+                        <span class="ml-2 bg-green-100 text-green-600 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1"><i class="fab fa-line text-xs"></i> 快速結帳</span>
+                    </div>
+                </label>
+
+                <label class="flex items-center p-3 border border-gray-100 rounded-xl cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50/50 has-[:checked]:shadow-sm transition-all relative">
+                    <input type="radio" name="payment" class="w-4 h-4 text-salmon-500 focus:ring-salmon-500 mt-0.5 accent-salmon-500">
+                    <div class="ml-3 flex-1">
+                        <span class="text-sm font-bold text-gray-800">貨到付款</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Invoice -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-file-invoice-dollar text-gray-400 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">發票資訊</h3>
+            </div>
+            
+            <div class="p-4">
+                <select class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 text-gray-700 bg-gray-50 focus:bg-white appearance-none mb-3">
+                    <option value="cloud">雲端發票 (會員載具)</option>
+                    <option value="phone">手機條碼載具</option>
+                    <option value="company">公司統編發票</option>
+                    <option value="donate">捐贈發票</option>
+                </select>
+                <p class="text-[10px] text-gray-400 leading-relaxed"><i class="fas fa-info-circle mr-1"></i>響應環保，我們預設開啟會員專屬載具，如中獎將會透過 LINE 通知您！</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Submission Bar -->
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.05)] border-t border-gray-100 pb-safe z-40">
+        <!-- Expandable Price Detail -->
+        <div class="px-4 pt-3 pb-2 flex justify-between items-end border-b border-gray-50 border-dashed">
+            <div class="text-xs text-gray-500">
+                商品小計 <span class="font-medium inline-block ml-1">NT$ 1,280</span><br>
+                運費 <span class="font-medium inline-block ml-1">NT$ 150</span><br>
+                折扣 <span class="font-medium text-red-500 inline-block ml-1">-NT$ 100</span>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-gray-400 block mb-0.5">應付總額</span>
+                <span class="text-2xl font-bold text-salmon-600 leading-none">NT$ 1,330</span>
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="p-3">
+            <button class="w-full bg-salmon-500 text-white font-bold text-sm lg:text-base py-3.5 rounded-xl shadow-md hover:bg-salmon-600 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                <i class="fas fa-lock text-sm opacity-80"></i> 確認結帳
+            </button>
+            <div class="text-[10px] text-center text-gray-400 mt-2">點擊按鈕即表示您同意我們的<a href="#" class="underline text-gray-500 mx-1">服務條款</a>與<a href="#" class="underline text-gray-500 mx-1">隱私政策</a></div>
+        </div>
+    </div>
+
+</body>
+</html>

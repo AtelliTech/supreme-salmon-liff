@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>訂單詳情 - Supreme Salmon</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        salmon: {
+                            50: '#fff3f1',
+                            100: '#ffe4df',
+                            500: '#ff7b65',
+                            600: '#f55a42',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Support for safe area in iOS browsers/LIFF */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased pb-24">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm px-4 py-3 flex items-center justify-between">
+        <a href="../index.html" class="text-gray-600 w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1 class="text-lg font-bold text-gray-800">訂單詳情</h1>
+        <div class="w-8"></div> <!-- Spacer for centering title -->
+    </header>
+
+    <main class="p-3 flex flex-col gap-3">
+
+        <!-- Order Status Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 text-center relative overflow-hidden">
+            <!-- Decorative background element -->
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-salmon-50 rounded-full opacity-50 z-0"></div>
+            
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-salmon-100 text-salmon-500 mb-3 relative z-10 shadow-sm border border-salmon-200">
+                <i class="fas fa-box-open text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-1 relative z-10">商家處理中</h2>
+            <p class="text-sm text-gray-500 relative z-10">預計於 1-2 個工作天內出貨及配發單號</p>
+        </div>
+
+        <!-- Product List Break-down -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-shopping-bag text-salmon-500 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">商品明細</h3>
+            </div>
+            
+            <div class="p-4 flex flex-col gap-4">
+                <!-- Product Item 1 -->
+                <div class="flex gap-3">
+                    <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?auto=format&fit=crop&w=150&q=80" alt="頂級挪威鮮切鮭魚菲力" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug">頂級挪威鮮切鮭魚菲力</h4>
+                        <p class="text-[11px] text-gray-500 mt-1">規格: 300g (厚切)</p>
+                        <div class="mt-auto flex justify-between items-end">
+                            <span class="text-sm font-bold text-salmon-600">NT$ 380</span>
+                            <span class="text-xs text-gray-500 font-medium">x 2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Item 2 -->
+                <div class="flex gap-3">
+                    <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=150&q=80" alt="智利厚切鮭魚排" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug">智利厚切鮭魚排 家庭號</h4>
+                        <p class="text-[11px] text-gray-500 mt-1">規格: 500g</p>
+                        <div class="mt-auto flex justify-between items-end">
+                            <span class="text-sm font-bold text-salmon-600">NT$ 520</span>
+                            <span class="text-xs text-gray-500 font-medium">x 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Price Summary -->
+            <div class="bg-gray-50 p-4 border-t border-gray-100 rounded-b-xl">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-500">商品小計</span>
+                    <span class="text-sm font-medium text-gray-800">NT$ 1,280</span>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-500">冷鏈運費</span>
+                    <span class="text-sm font-medium text-gray-800">NT$ 150</span>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-sm text-gray-500">活動折扣 <span class="text-[10px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded ml-1">滿千折百</span></span>
+                    <span class="text-sm font-medium text-red-500">- NT$ 100</span>
+                </div>
+                <!-- Divider -->
+                <div class="h-px bg-gray-200 w-full my-2"></div>
+                
+                <div class="pt-1 flex justify-between items-center">
+                    <span class="text-sm font-bold text-gray-800">結帳總額</span>
+                    <span class="text-lg font-bold text-salmon-600">NT$ 1,330</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Information block -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-file-invoice text-gray-400 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">訂單資訊</h3>
+            </div>
+            <div class="p-4 space-y-3">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0">訂單編號</span>
+                    <div class="text-sm font-medium text-gray-800 flex items-center gap-2">
+                        <span>#ORD-20260309-001</span>
+                        <button class="text-salmon-500 hover:text-salmon-600 focus:outline-none bg-salmon-50 w-6 h-6 rounded-md flex items-center justify-center transition-colors">
+                            <i class="far fa-copy text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">訂購時間</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">2026/03/09 10:30:45</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">付款方式</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">線上信用卡<br><span class="text-xs text-green-600 font-bold bg-green-50 px-1.5 py-0.5 mt-1 inline-block rounded">已付款</span></span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">發票資訊</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">電子發票 (個人)<br><span class="text-xs text-gray-400 font-normal">號碼：AA-12345678</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping details block -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                <i class="fas fa-truck text-gray-400 mr-2"></i>
+                <h3 class="font-bold text-sm text-gray-700">配送資訊</h3>
+            </div>
+            <div class="p-4 space-y-3">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">收件人</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">王小明</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">聯絡電話</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">0912-345-678</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">收件地址</span>
+                    <span class="text-sm font-medium text-gray-800 text-right leading-relaxed">110 台北市信義區<br>信義路五段7號 (台北101) 89樓</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 w-20 shrink-0 mt-0.5">訂單備註</span>
+                    <span class="text-sm font-medium text-gray-800 text-right">請於下午 6 點前送達交給櫃檯，感謝！</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <!-- Fix to bottom, blur background, safe-area-bottom padding -->
+    <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-sm border-t border-gray-200 pb-safe z-40 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] flex gap-3">
+        <button class="flex-1 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-full text-sm hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2 active:scale-95">
+            <i class="far fa-comment-dots"></i> 聯絡客服
+        </button>
+        <!-- Disabled style based on "Processing status" which you typically cannot cancel easily -->
+        <button class="flex-1 py-2.5 bg-gray-100 text-gray-400 font-bold rounded-full text-sm cursor-not-allowed flex items-center justify-center gap-2">
+            取消訂單
+        </button>
+    </div>
+
+</body>
+</html>
