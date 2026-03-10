@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "serve dist"
+    "start": "serve dist --listen 3000",
+    "start:https": "serve dist --listen 9000 --ssl-cert localhost.pem --ssl-key localhost-key.pem"
   },
   "dependencies": {
     "@line/liff": "2.27.3",
