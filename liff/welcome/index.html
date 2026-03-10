@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>會員註冊 - Supreme Salmon</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        salmon: {
+                            50: '#fff3f1',
+                            100: '#ffe4df',
+                            500: '#ff7b65',
+                            600: '#f55a42',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Support for safe area in iOS browsers/LIFF */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        /* Input autofill style override */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: #374151 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased pb-32">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm px-4 py-3 flex items-center justify-center">
+        <h1 class="text-lg font-bold text-gray-800">會員註冊</h1>
+    </header>
+
+    <main class="p-4 flex flex-col gap-4">
+
+        <!-- Welcome Banner -->
+        <div class="text-center py-4">
+            <div class="w-20 h-20 mx-auto bg-salmon-100 rounded-full flex items-center justify-center mb-3 shadow-inner">
+                <i class="fas fa-user-circle text-4xl text-salmon-500"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800">歡迎加入 Supreme Salmon !</h2>
+            <p class="text-sm text-gray-500 mt-2">請完善您的會員資料，以享受專屬優惠與服務。</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form class="space-y-4">
+            <!-- Section 1: Basic Info -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                    <i class="fas fa-id-card text-salmon-500 mr-2"></i>
+                    <h3 class="font-bold text-sm text-gray-700">基本資料</h3>
+                </div>
+                
+                <div class="p-4 space-y-4">
+                    <!-- Display Name (LINE Profile Name) -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">顯示名稱 (LINE 暱稱)</label>
+                        <div class="relative">
+                            <i class="fab fa-line absolute left-3 top-1/2 -translate-y-1/2 text-green-500 text-lg z-10"></i>
+                            <input type="text" name="display_name" class="w-full border border-gray-200 rounded-lg pl-10 pr-3 py-2.5 text-sm bg-gray-100 text-gray-500 focus:outline-none cursor-not-allowed" placeholder="讀取中..." value="User123" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Real Name -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">真實姓名 <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="請填寫真實姓名，以利後續核對" required>
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">聯絡電話 <span class="text-red-500">*</span></label>
+                        <input type="tel" name="phone" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="09XX-XXX-XXX" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
+                        <input type="email" name="email" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="example@mail.com" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Company Info -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center">
+                    <i class="fas fa-building text-salmon-500 mr-2"></i>
+                    <h3 class="font-bold text-sm text-gray-700">公司資訊 (若為企業客戶請填寫)</h3>
+                </div>
+                
+                <div class="p-4 space-y-4">
+                    <!-- Company Name -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">公司名稱</label>
+                        <input type="text" name="company_name" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="請填寫公司行號名稱">
+                    </div>
+
+                    <!-- Company VAT ID -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">統一編號</label>
+                        <input type="text" name="vat_id" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white" placeholder="8碼數字" pattern="\d{8}" maxlength="8">
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </main>
+
+    <!-- Bottom Submission Bar -->
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.05)] border-t border-gray-100 pb-safe z-40">
+        <div class="p-4">
+            <button type="button" class="w-full bg-salmon-500 text-white font-bold text-base py-3.5 rounded-xl shadow-md hover:bg-salmon-600 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                <i class="fas fa-check-circle text-sm opacity-90"></i> 註冊並送出
+            </button>
+            <div class="text-[10px] text-center text-gray-400 mt-3 pb-1">點擊送出即表示您同意我們的<a href="#" class="underline text-gray-500 mx-1">會員服務條款</a>與<a href="#" class="underline text-gray-500 mx-1">隱私政策</a></div>
+        </div>
+    </div>
+
+</body>
+</html>
