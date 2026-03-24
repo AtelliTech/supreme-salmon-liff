@@ -137,32 +137,22 @@
         <div
           class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center"
         >
-          <i class="fas fa-truck text-salmon-500 mr-2"></i>
+          <i class="fas fa-truck text-gray-400 mr-2"></i>
           <h3 class="font-bold text-sm text-gray-700">收件與配送資訊</h3>
         </div>
 
         <div class="p-4 space-y-4">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1"
-                >收件人姓名 <span class="text-red-500">*</span></label
-              >
-              <input
-                type="text"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white"
-                placeholder="真實姓名"
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1"
-                >聯絡電話 <span class="text-red-500">*</span></label
-              >
-              <input
-                type="tel"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 focus:ring-1 focus:ring-salmon-500 transition-shadow bg-gray-50 focus:bg-white"
-                placeholder="09XX-XXX-XXX"
-              />
-            </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1"
+              >店別 <span class="text-red-500">*</span></label
+            >
+            <select
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-salmon-500 text-gray-700 bg-gray-50 focus:bg-white appearance-none"
+            >
+              <option value="">選擇店別</option>
+              <option value="TPE">饗食天堂 - 台北市</option>
+              <option value="NWT">饗食天堂 - 新北市</option>
+            </select>
           </div>
 
           <div>
@@ -194,37 +184,6 @@
 
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1"
-              >希望送達區間</label
-            >
-            <div class="grid grid-cols-3 gap-2">
-              <label
-                class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors"
-              >
-                <input
-                  type="radio"
-                  name="delivery_time"
-                  class="hidden"
-                  checked
-                />
-                <span class="text-[11px] font-bold">皆可</span>
-              </label>
-              <label
-                class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors"
-              >
-                <input type="radio" name="delivery_time" class="hidden" />
-                <span class="text-[11px] font-bold">13:00 前</span>
-              </label>
-              <label
-                class="text-center border border-gray-200 rounded-lg py-2 cursor-pointer has-[:checked]:border-salmon-500 has-[:checked]:bg-salmon-50 has-[:checked]:text-salmon-600 text-gray-500 transition-colors"
-              >
-                <input type="radio" name="delivery_time" class="hidden" />
-                <span class="text-[11px] font-bold">14:00 - 18:00</span>
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1"
               >訂單備註 (選填)</label
             >
             <textarea
@@ -242,15 +201,11 @@
     >
       <!-- Expandable Price Detail -->
       <div
-        class="px-4 pt-3 pb-2 flex justify-between items-end border-b border-gray-50 border-dashed"
+        class="px-4 pt-3 pb-2 flex justify-between items-start border-b border-gray-50 border-dashed"
       >
-        <div class="text-xs text-gray-500">
-          商品小計 <span class="font-medium inline-block ml-1">NT$ 1,280</span
-          ><br />
-          運費 <span class="font-medium inline-block ml-1">NT$ 150</span><br />
-          折扣
-          <span class="font-medium text-red-500 inline-block ml-1"
-            >-NT$ 100</span
+        <div class="text-xs text-gray-400">
+          商品小計<br /><span class="font-medium text-salmon-600 inline-block"
+            >NT$ 1,280</span
           >
         </div>
         <div class="text-right">
