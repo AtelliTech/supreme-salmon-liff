@@ -44,6 +44,10 @@
       .pb-safe {
         padding-bottom: env(safe-area-inset-bottom);
       }
+
+      body.modal-open {
+        overflow: hidden;
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-800 antialiased no-scrollbar pb-20">
@@ -118,7 +122,8 @@
               </p>
             </div>
             <button
-              class="bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              data-specs="300g 厚切|600g 雙片|1kg 家庭號"
             >
               <i class="fas fa-plus text-sm"></i>
             </button>
@@ -153,7 +158,8 @@
               </p>
             </div>
             <button
-              class="bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              data-specs="500g 家庭號|1kg 超值包"
             >
               <i class="fas fa-plus text-sm"></i>
             </button>
@@ -193,7 +199,8 @@
               </p>
             </div>
             <button
-              class="bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              data-specs="80g 迷你盒|150g 標準盒|300g 派對盒"
             >
               <i class="fas fa-plus text-sm"></i>
             </button>
@@ -228,7 +235,8 @@
               </p>
             </div>
             <button
-              class="bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+              data-specs="100g 薄切|150g 標準|300g 分享包"
             >
               <i class="fas fa-plus text-sm"></i>
             </button>
@@ -236,6 +244,114 @@
         </div>
       </div>
     </main>
+
+    <div
+      id="product-modal"
+      class="fixed inset-0 z-50 hidden"
+      aria-hidden="true"
+    >
+      <div
+        id="product-modal-backdrop"
+        class="absolute inset-0 bg-black/35 opacity-0 transition-opacity duration-200"
+      ></div>
+
+      <div
+        id="product-modal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-modal-title"
+        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[86vh] pb-safe overflow-y-auto shadow-2xl translate-y-full transition-transform duration-300"
+      >
+        <div
+          class="px-4 py-3 border-b border-gray-100 flex items-center justify-between"
+        >
+          <h2
+            id="product-modal-title"
+            class="font-bold text-base text-gray-800"
+          >
+            商品選購
+          </h2>
+          <button
+            id="product-modal-close"
+            class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+            aria-label="關閉"
+          >
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="p-4 space-y-4">
+          <div class="flex gap-3">
+            <div
+              class="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 shrink-0"
+            >
+              <img
+                id="modal-product-image"
+                src="/placeholder.jpg"
+                alt="商品圖片"
+                class="w-full h-full object-contain"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3
+                id="modal-product-name"
+                class="font-semibold text-sm text-gray-800 leading-snug"
+              >
+                商品名稱
+              </h3>
+              <p id="modal-product-desc" class="text-xs text-gray-500 mt-1">
+                商品描述
+              </p>
+              <p
+                id="modal-product-price"
+                class="text-red-500 font-bold text-lg mt-2"
+              >
+                NT$ 0
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">商品規格</h4>
+            <div id="modal-spec-options" class="grid grid-cols-2 gap-2"></div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">購買數量</h4>
+            <div
+              class="inline-flex items-center border border-gray-200 rounded-xl overflow-hidden"
+            >
+              <button
+                id="modal-qty-minus"
+                class="w-10 h-10 bg-gray-50 text-gray-600 hover:bg-gray-100 active:scale-95 transition-transform"
+                aria-label="減少數量"
+              >
+                <i class="fas fa-minus text-xs"></i>
+              </button>
+              <span
+                id="modal-qty-value"
+                class="w-12 text-center font-semibold text-gray-800"
+                >1</span
+              >
+              <button
+                id="modal-qty-plus"
+                class="w-10 h-10 bg-gray-50 text-gray-600 hover:bg-gray-100 active:scale-95 transition-transform"
+                aria-label="增加數量"
+              >
+                <i class="fas fa-plus text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <button
+            id="modal-confirm-btn"
+            class="w-full bg-salmon-500 text-white font-semibold text-sm py-3.5 rounded-xl shadow-md hover:bg-salmon-600 active:scale-[0.98] transition-all"
+          >
+            確定
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Bottom Navigation Bar (Mobile App Style) -->
     <nav
@@ -265,5 +381,160 @@
         </a>
       </div>
     </nav>
+
+    <script>
+      (() => {
+        const modal = document.getElementById("product-modal");
+        const panel = document.getElementById("product-modal-panel");
+        const backdrop = document.getElementById("product-modal-backdrop");
+        const closeBtn = document.getElementById("product-modal-close");
+        const confirmBtn = document.getElementById("modal-confirm-btn");
+
+        const productImage = document.getElementById("modal-product-image");
+        const productName = document.getElementById("modal-product-name");
+        const productDesc = document.getElementById("modal-product-desc");
+        const productPrice = document.getElementById("modal-product-price");
+        const specOptions = document.getElementById("modal-spec-options");
+
+        const qtyMinusBtn = document.getElementById("modal-qty-minus");
+        const qtyPlusBtn = document.getElementById("modal-qty-plus");
+        const qtyValue = document.getElementById("modal-qty-value");
+
+        const openButtons = document.querySelectorAll(".js-open-product-modal");
+
+        const state = {
+          qty: 1,
+          selectedSpec: "",
+        };
+
+        const setQty = (nextQty) => {
+          state.qty = Math.max(1, nextQty);
+          qtyValue.textContent = String(state.qty);
+        };
+
+        const parseSpecs = (button) => {
+          const specs = (button.dataset.specs || "標準規格")
+            .split("|")
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+          return specs.length ? specs : ["標準規格"];
+        };
+
+        const renderSpecs = (specs) => {
+          state.selectedSpec = specs[0];
+
+          specOptions.innerHTML = specs
+            .map(
+              (spec, index) =>
+                `<button data-spec="${spec}" class="js-spec-item px-3 py-2 rounded-lg text-xs border transition-colors ${
+                  index === 0
+                    ? "border-salmon-500 bg-salmon-50 text-salmon-600"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-salmon-300"
+                }">${spec}</button>`,
+            )
+            .join("");
+
+          specOptions.querySelectorAll(".js-spec-item").forEach((button) => {
+            button.addEventListener("click", () => {
+              state.selectedSpec = button.dataset.spec || "";
+
+              specOptions.querySelectorAll(".js-spec-item").forEach((item) => {
+                item.classList.remove(
+                  "border-salmon-500",
+                  "bg-salmon-50",
+                  "text-salmon-600",
+                );
+                item.classList.add(
+                  "border-gray-200",
+                  "bg-white",
+                  "text-gray-600",
+                  "hover:border-salmon-300",
+                );
+              });
+
+              button.classList.remove(
+                "border-gray-200",
+                "bg-white",
+                "text-gray-600",
+                "hover:border-salmon-300",
+              );
+              button.classList.add(
+                "border-salmon-500",
+                "bg-salmon-50",
+                "text-salmon-600",
+              );
+            });
+          });
+        };
+
+        const openModal = (button) => {
+          const card = button.closest(".bg-white.rounded-xl");
+
+          if (!card) {
+            return;
+          }
+
+          const imageEl = card.querySelector("img");
+          const nameEl = card.querySelector("h3");
+          const descEl = card.querySelector("p.text-xs");
+          const priceEl = card.querySelector("p.text-red-500");
+
+          productImage.src = imageEl?.src || "/placeholder.jpg";
+          productImage.alt = nameEl?.textContent?.trim() || "商品圖片";
+          productName.textContent = nameEl?.textContent?.trim() || "未命名商品";
+          productDesc.textContent = descEl?.textContent?.trim() || "";
+          productPrice.textContent = priceEl?.textContent?.trim() || "NT$ 0";
+
+          renderSpecs(parseSpecs(button));
+          setQty(1);
+
+          modal.classList.remove("hidden");
+          document.body.classList.add("modal-open");
+
+          requestAnimationFrame(() => {
+            backdrop.classList.remove("opacity-0");
+            backdrop.classList.add("opacity-100");
+            panel.classList.remove("translate-y-full");
+            panel.classList.add("translate-y-0");
+          });
+
+          modal.setAttribute("aria-hidden", "false");
+        };
+
+        const closeModal = () => {
+          backdrop.classList.remove("opacity-100");
+          backdrop.classList.add("opacity-0");
+          panel.classList.remove("translate-y-0");
+          panel.classList.add("translate-y-full");
+          modal.setAttribute("aria-hidden", "true");
+
+          window.setTimeout(() => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("modal-open");
+          }, 250);
+        };
+
+        openButtons.forEach((button) => {
+          button.addEventListener("click", () => openModal(button));
+        });
+
+        closeBtn.addEventListener("click", closeModal);
+        confirmBtn.addEventListener("click", closeModal);
+        backdrop.addEventListener("click", closeModal);
+
+        qtyMinusBtn.addEventListener("click", () => setQty(state.qty - 1));
+        qtyPlusBtn.addEventListener("click", () => setQty(state.qty + 1));
+
+        document.addEventListener("keydown", (event) => {
+          if (
+            event.key === "Escape" &&
+            modal.getAttribute("aria-hidden") === "false"
+          ) {
+            closeModal();
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
