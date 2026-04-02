@@ -536,9 +536,15 @@
         });
       })();
     </script>
-    <script>
-      fetch("https://mowiapi.ilnk.io/api/liff/user_check/123")
-        .then((response) => response.json())
+    <script type="module">
+      import { createLiffApi } from "/api/index.js";
+
+      const api = createLiffApi({
+        baseUrl: "https://mowiapi.ilnk.io/api",
+      });
+
+      api
+        .checkUser("123")
         .then((data) => {
           console.log("User Check Result:", data);
         })
