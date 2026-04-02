@@ -537,18 +537,48 @@
       })();
     </script>
     <script type="module">
+      import liff from "@line/liff";
       import { createLiffApi } from "/api/index.js";
 
-      const api = createLiffApi();
+      main();
 
-      api
-        .checkUser("123")
-        .then((data) => {
-          console.log("User Check Result:", data);
-        })
-        .catch((error) => {
-          console.error("Error checking user:", error);
-        });
+      async function main() {
+        await liff.init({ liffId: "2009395054-rgDD7RPZ" });
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        } else {
+          const api = createLiffApi();
+          const profile = await liff.getProfile();
+          const { userId } = profile;
+
+          api
+            .getProducts(userId, {
+              customerId: 1,
+              divisionId: 1,
+            })
+            .then((products) => {
+              console.log("Products:", products);
+            })
+            .catch((error) => {
+              console.error("Error fetching products:", error);
+            });
+
+          api
+            .checkUser(userId)
+            .then((response) => {
+              console.log("User check response:", response);
+            })
+            .catch((error) => {
+              console.error("Error checking user:", error.status);
+
+              if (error.status === 404) {
+                // redirect to sign-up page if user is not found
+                // window.location.href = "/sign-up";
+              }
+            });
+        }
+      }
     </script>
   </body>
 </html>
