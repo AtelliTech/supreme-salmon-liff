@@ -169,7 +169,7 @@ async function requestJson(config, options = {}) {
 
 export function createLiffApi(options = {}) {
   const config = {
-    baseUrl: options.baseUrl,
+    baseUrl: options.baseUrl ?? "https://mowiapi.ilnk.io/api",
     fetchImpl: options.fetchImpl,
     defaultHeaders: options.defaultHeaders,
   };

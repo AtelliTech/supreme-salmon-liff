@@ -1,22 +1,34 @@
-// import './style.css';
-// import liff from '@line/liff';
+import liff from "@line/liff";
+import { createLiffApi } from "./api";
 
-window.location.href = '/sign-up';
+main();
 
-// liff
-//   .init({
-//     liffId: import.meta.env.VITE_LIFF_ID
-//   })
-//   .then(() => {
-//     window.location.href = '/sign-up';
-//   })
-//   .catch((error) => {
-//     document.querySelector('#app').innerHTML = `
-//     <h1>create-liff-app</h1>
-//     <p>LIFF init failed.</p>
-//     <p><code>${error}</code></p>
-//     <a href="https://developers.line.biz/ja/docs/liff/" target="_blank" rel="noreferrer">
-//       LIFF Documentation
-//     </a>
-//   `;
-//   });
+async function main() {
+  await liff.init({ liffId: "2009395054-rgDD7RPZ" });
+  if (!liff.isLoggedIn()) {
+    liff.login();
+  } else {
+    const api = createLiffApi();
+    const profile = await liff.getProfile();
+
+    const { userId } = profile;
+
+    api
+      .checkUser(userId)
+      .then((response) => {
+        console.log("User check response:", response);
+
+        if (error.status !== 404) {
+          window.location.href = "/products";
+        }
+      })
+      .catch((error) => {
+        console.error("Error checking user:", error.status);
+
+        if (error.status === 404) {
+          // redirect to sign-up page if user is not found
+          window.location.href = "/sign-up";
+        }
+      });
+  }
+}

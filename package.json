@@ -2,7 +2,7 @@
   "name": "supreme-salmon",
   "version": "0.1.0-alpha.3",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 9000",
     "build": "vite build",
     "preview": "vite preview",
     "start": "serve dist --listen 3000",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@line/liff": "2.27.3",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "release-it": "^19.2.4",
     "serve": "^14.2.6"
   },
