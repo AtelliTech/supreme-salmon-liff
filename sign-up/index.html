@@ -276,7 +276,7 @@
             .checkUser(profile.userId)
             .then((response) => {
               console.log("User check response:", response);
-              if (error.status !== 404) {
+              if (response.status !== 404) {
                 // redirect to home page if user is found
                 window.location.href = "/products";
               }

@@ -7,7 +7,8 @@
     "preview": "vite preview",
     "start": "serve dist --listen 3000",
     "start:https": "serve dist --listen 9000 --ssl-cert localhost.pem --ssl-key localhost-key.pem",
-    "release": "release-it"
+    "release": "release-it",
+    "test": "vitest run api/index.test.js"
   },
   "dependencies": {
     "@line/liff": "2.27.3",
@@ -16,6 +17,7 @@
     "serve": "^14.2.6"
   },
   "devDependencies": {
-    "vite": "7.3.1"
+    "vite": "7.3.1",
+    "vitest": "^4.1.2"
   }
 }

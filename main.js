@@ -18,7 +18,15 @@ async function main() {
       .then((response) => {
         console.log("User check response:", response);
 
-        if (error.status !== 404) {
+        if (response.data.is_customer === "N") {
+          // redirect to pending page if user is not a customer
+          window.location.href = "/pending";
+
+          return;
+        }
+
+        if (response.data.is_customer === "Y") {
+          // redirect to products page if user is a customer
           window.location.href = "/products";
         }
       })

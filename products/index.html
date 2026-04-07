@@ -553,18 +553,6 @@
           const { userId } = profile;
 
           api
-            .getProducts(userId, {
-              customerId: 1,
-              divisionId: 1,
-            })
-            .then((products) => {
-              console.log("Products:", products);
-            })
-            .catch((error) => {
-              console.error("Error fetching products:", error);
-            });
-
-          api
             .checkUser(userId)
             .then((response) => {
               console.log("User check response:", response);
@@ -576,6 +564,18 @@
                 // redirect to sign-up page if user is not found
                 // window.location.href = "/sign-up";
               }
+            });
+
+          api
+            .getProducts(userId, {
+              customerId: 1,
+              divisionId: 1,
+            })
+            .then((products) => {
+              console.log("Products:", products);
+            })
+            .catch((error) => {
+              console.error("Error fetching products:", error);
             });
         }
       }
