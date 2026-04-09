@@ -3,21 +3,26 @@ import { createLiffApi } from "/api/index.js";
 
 const LIFF_ID = "2009395054-rgDD7RPZ";
 
-export async function resolveUserRoute({
+function normalizePath(path) {
+  return (path || "/").replace(/\/+$/, "") || "/";
+}
+
+export function safeRedirect(path) {
+  const current = normalizePath(window.location.pathname);
+  const target = normalizePath(path);
+
+  if (current === target) return false;
+  window.location.href = target;
+  return true;
+}
+
+export async function resolveUserState({
   api = createLiffApi(),
   liffId = LIFF_ID,
-  onNotLoggedIn = () => liff.login(),
-  onPending = () => safeRedirect("/pending"),
-  onCustomer = () => safeRedirect("/products"),
-  onNotFound = () => safeRedirect("/sign-up"),
-  onError = ({ error, status }) => {
-    console.error("Error checking user:", status, error);
-  },
 } = {}) {
   await liff.init({ liffId });
 
   if (!liff.isLoggedIn()) {
-    onNotLoggedIn();
     return { state: "NOT_LOGGED_IN" };
   }
 
@@ -29,12 +34,10 @@ export async function resolveUserRoute({
     const isCustomer = response?.data?.is_customer;
 
     if (isCustomer === "N") {
-      onPending({ userId, profile, response });
       return { state: "PENDING", userId, profile, response };
     }
 
     if (isCustomer === "Y") {
-      onCustomer({ userId, profile, response });
       return { state: "CUSTOMER", userId, profile, response };
     }
 
@@ -43,22 +46,51 @@ export async function resolveUserRoute({
     const status = error?.status ?? error?.response?.status;
 
     if (status === 404) {
-      onNotFound({ userId, profile, error, status });
       return { state: "NOT_FOUND", userId, profile, error, status };
     }
 
-    onError({ userId, profile, error, status });
     return { state: "ERROR", userId, profile, error, status };
   }
 }
 
-function safeRedirect(path) {
-  const current = window.location.pathname.replace(/\/+$/, "") || "/";
-  const target = path.replace(/\/+$/, "") || "/";
+export function routeByUserState({
+  result,
+  onNotLoggedIn = () => liff.login(),
+  onPending = ({ userId, profile, response }) => safeRedirect("/pending"),
+  onCustomer = ({ userId, profile, response }) => safeRedirect("/products"),
+  onNotFound = ({ userId, profile, error, status }) => safeRedirect("/sign-up"),
+  onError = ({ userId, profile, error, status }) => {
+    console.error("Error checking user:", status, error);
+  },
+} = {}) {
+  if (!result?.state) return result;
 
-  if (current === target) return false;
+  switch (result.state) {
+    case "NOT_LOGGED_IN":
+      onNotLoggedIn({ result });
+      break;
+    case "PENDING":
+      onPending(result);
+      break;
+    case "CUSTOMER":
+      onCustomer(result);
+      break;
+    case "NOT_FOUND":
+      onNotFound(result);
+      break;
+    case "ERROR":
+      onError(result);
+      break;
+    default:
+      break;
+  }
 
-  window.location.href = target;
+  return result;
+}
 
-  return true;
+export async function resolveUserRoute(options = {}) {
+  const { api = createLiffApi(), liffId = LIFF_ID } = options;
+  const result = await resolveUserState({ api, liffId });
+  routeByUserState({ result, ...options });
+  return result;
 }

@@ -1,14 +1,17 @@
 import { createLiffApi } from "/api/index.js";
-import { resolveUserRoute } from "/utils/index.js";
 
 main();
 
 async function main() {
   const api = createLiffApi();
+  const result = await resolveUserState({ api });
 
-  const { profile } = await resolveUserRoute();
+  if (result.state !== "NOT_FOUND") {
+    routeByUserState({ result });
+    return;
+  }
 
-  setupSignupForm({ api, profile });
+  setupSignupForm({ api, profile: result.profile });
 }
 
 function setupSignupForm({ api, profile }) {

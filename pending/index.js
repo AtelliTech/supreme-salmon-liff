@@ -1,7 +1,14 @@
-import { resolveUserRoute } from "/utils/index.js";
+import { createLiffApi } from "/api/index.js";
+import { resolveUserState, routeByUserState } from "/utils/index.js";
 
 async function main() {
-  await resolveUserRoute();
+  const api = createLiffApi();
+  const result = await resolveUserState({ api });
+
+  if (result.state !== "NOT_FOUND") {
+    routeByUserState({ result });
+    return;
+  }
 }
 
 main();
