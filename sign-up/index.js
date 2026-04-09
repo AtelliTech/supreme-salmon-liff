@@ -6,11 +6,7 @@ main();
 async function main() {
   const api = createLiffApi();
 
-  const { profile } = await resolveUserRoute({
-    onPending: ({ profile }) => {
-      console.log("使用者狀態: PENDING", profile);
-    },
-  });
+  const { profile } = await resolveUserRoute();
 
   setupSignupForm({ api, profile });
 }
