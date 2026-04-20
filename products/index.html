@@ -553,20 +553,6 @@
           const { userId } = profile;
 
           api
-            .checkUser(userId)
-            .then((response) => {
-              console.log("User check response:", response);
-            })
-            .catch((error) => {
-              console.error("Error checking user:", error.status);
-
-              if (error.status === 404) {
-                // redirect to sign-up page if user is not found
-                // window.location.href = "/sign-up";
-              }
-            });
-
-          api
             .getProducts(userId, {
               customerId: 1,
               divisionId: 1,
