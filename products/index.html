@@ -112,7 +112,7 @@
           >
             頂級挪威鮮切鮭魚菲力 (300g)
           </h3>
-          <p class="text-xs text-gray-400 mb-0.5">
+          <p class="product-description text-xs text-gray-400 mb-0.5">
             嚴選大西洋鮭魚，定重切割、貼體包裝
           </p>
           <div class="mt-auto pt-2 flex items-end justify-between">
@@ -124,119 +124,6 @@
             <button
               class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
               data-specs="300g 厚切|600g 雙片|1kg 家庭號"
-            >
-              <i class="fas fa-plus text-sm"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product Item 2 -->
-      <div
-        class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100"
-      >
-        <div class="relative pb-[100%]">
-          <img
-            src="/placeholder.jpg"
-            alt="鮭魚"
-            class="absolute top-0 left-0 w-full h-full object-contain"
-          />
-        </div>
-        <div class="p-2.5 flex-1 flex flex-col">
-          <h3
-            class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-1"
-          >
-            智利厚切鮭魚排 家庭號 (500g)
-          </h3>
-          <p class="text-xs text-gray-400 mb-0.5">
-            嚴選大西洋鮭魚，定重切割、貼體包裝
-          </p>
-          <div class="mt-auto pt-2 flex items-end justify-between">
-            <div>
-              <p class="text-red-500 font-bold leading-none text-base">
-                NT$ 520
-              </p>
-            </div>
-            <button
-              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
-              data-specs="500g 家庭號|1kg 超值包"
-            >
-              <i class="fas fa-plus text-sm"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product Item 3 -->
-      <div
-        class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100"
-      >
-        <div class="relative pb-[100%]">
-          <img
-            src="/placeholder.jpg"
-            alt="鮭魚"
-            class="absolute top-0 left-0 w-full h-full object-contain"
-          />
-          <div
-            class="absolute top-2 left-2 bg-yellow-400 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow"
-          >
-            新品
-          </div>
-        </div>
-        <div class="p-2.5 flex-1 flex flex-col">
-          <h3
-            class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-1"
-          >
-            嚴選北海道生食級鮭魚卵
-          </h3>
-          <p class="text-xs text-gray-400 mb-0.5">
-            嚴選大西洋鮭魚，定重切割、貼體包裝
-          </p>
-          <div class="mt-auto pt-2 flex items-end justify-between">
-            <div>
-              <p class="text-red-500 font-bold leading-none text-base">
-                NT$ 890
-              </p>
-            </div>
-            <button
-              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
-              data-specs="80g 迷你盒|150g 標準盒|300g 派對盒"
-            >
-              <i class="fas fa-plus text-sm"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product Item 4 -->
-      <div
-        class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100"
-      >
-        <div class="relative pb-[100%]">
-          <img
-            src="/placeholder.jpg"
-            alt="鮭魚"
-            class="absolute top-0 left-0 w-full h-full object-contain"
-          />
-        </div>
-        <div class="p-2.5 flex-1 flex flex-col">
-          <h3
-            class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-1"
-          >
-            法式冷燻鮭魚切片 薄切 (150g)
-          </h3>
-          <p class="text-xs text-gray-400 mb-0.5">
-            嚴選大西洋鮭魚，定重切割、貼體包裝
-          </p>
-          <div class="mt-auto pt-2 flex items-end justify-between">
-            <div>
-              <p class="text-red-500 font-bold leading-none text-base">
-                NT$ 250
-              </p>
-            </div>
-            <button
-              class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
-              data-specs="100g 薄切|150g 標準|300g 分享包"
             >
               <i class="fas fa-plus text-sm"></i>
             </button>
@@ -477,13 +364,14 @@
 
           const imageEl = card.querySelector("img");
           const nameEl = card.querySelector("h3");
-          const descEl = card.querySelector("p.text-xs");
+          const descEl =
+            card.querySelector(".product-description");
           const priceEl = card.querySelector("p.text-red-500");
 
           productImage.src = imageEl?.src || "/placeholder.jpg";
           productImage.alt = nameEl?.textContent?.trim() || "商品圖片";
           productName.textContent = nameEl?.textContent?.trim() || "未命名商品";
-          productDesc.textContent = descEl?.textContent?.trim() || "";
+          productDesc.innerHTML = descEl?.innerHTML?.trim() || "";
           productPrice.textContent = priceEl?.textContent?.trim() || "NT$ 0";
 
           renderSpecs(parseSpecs(button));
@@ -552,17 +440,17 @@
           const profile = await liff.getProfile();
           const { userId } = profile;
 
-          api
-            .getProducts(userId, {
-              customerId: 1,
-              divisionId: 1,
-            })
-            .then((products) => {
-              console.log("Products:", products);
-            })
-            .catch((error) => {
-              console.error("Error fetching products:", error);
-            });
+          // api
+          //   .getProducts(userId, {
+          //     customerId: 1,
+          //     divisionId: 1,
+          //   })
+          //   .then((products) => {
+          //     console.log("Products:", products);
+          //   })
+          //   .catch((error) => {
+          //     console.error("Error fetching products:", error);
+          //   });
         }
       }
     </script>
