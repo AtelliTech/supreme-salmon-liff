@@ -215,11 +215,15 @@
               >
                 <i class="fas fa-minus text-xs"></i>
               </button>
-              <span
+              <input
+                type="number"
+                min="0"
+                step="1"
                 id="modal-qty-value"
-                class="w-12 text-center font-semibold text-gray-800"
-                >1</span
-              >
+                value="1"
+                class="w-16 text-center font-semibold text-gray-800 bg-white focus:outline-none"
+                aria-label="輸入數量"
+              />
               <button
                 id="modal-qty-plus"
                 class="w-10 h-10 bg-gray-50 text-gray-600 hover:bg-gray-100 active:scale-95 transition-transform"
@@ -295,8 +299,13 @@
         };
 
         const setQty = (nextQty) => {
-          state.qty = Math.max(1, nextQty);
-          qtyValue.textContent = String(state.qty);
+          const parsedQty = Number(nextQty);
+          const safeQty = Number.isFinite(parsedQty)
+            ? Math.max(0, Math.floor(parsedQty))
+            : 0;
+
+          state.qty = safeQty;
+          qtyValue.value = String(state.qty);
         };
 
         const parseSpecs = (button) => {
@@ -413,6 +422,8 @@
 
         qtyMinusBtn.addEventListener("click", () => setQty(state.qty - 1));
         qtyPlusBtn.addEventListener("click", () => setQty(state.qty + 1));
+        qtyValue.addEventListener("input", () => setQty(qtyValue.value));
+        qtyValue.addEventListener("blur", () => setQty(qtyValue.value));
 
         document.addEventListener("keydown", (event) => {
           if (
