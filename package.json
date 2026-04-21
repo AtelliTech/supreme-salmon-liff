@@ -1,6 +1,6 @@
 {
   "name": "supreme-salmon",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "scripts": {
     "dev": "vite --port 9000",
     "build": "vite build",
