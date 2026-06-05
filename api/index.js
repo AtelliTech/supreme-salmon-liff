@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = "/api";
+const DEFAULT_BASE_URL = "/";
 
 class LiffApiError extends Error {
   constructor(message, options = {}) {
@@ -169,7 +169,7 @@ async function requestJson(config, options = {}) {
 
 export function createLiffApi(options = {}) {
   const config = {
-    baseUrl: options.baseUrl ?? "https://mowiapi.ilnk.io/api",
+    baseUrl: options.baseUrl ?? "https://api.mowi.ilnk.io",
     fetchImpl: options.fetchImpl,
     defaultHeaders: options.defaultHeaders,
   };

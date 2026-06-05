@@ -2,7 +2,7 @@
  * Integration tests for LIFF API (api/index.js)
  *
  * Configure via environment variables before running:
- *   BASE_URL=https://mowiapi.ilnk.io/api \
+ *   BASE_URL=https://api.mowi.ilnk.io \
  *   LINE_USER_ID=Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
  *   yarn test
  *
@@ -16,7 +16,7 @@ import { describe, expect, it } from "vitest";
 import { createLiffApi } from "./index.js";
 
 // ─── Configurable ────────────────────────────────────────────────────────────
-const BASE_URL = process.env.BASE_URL ?? "https://mowiapi.ilnk.io/api";
+const BASE_URL = process.env.BASE_URL ?? "https://api.mowi.ilnk.io";
 const LINE_USER_ID = process.env.LINE_USER_ID ?? "";
 const CUSTOMER_ID = process.env.CUSTOMER_ID ?? "";
 const DIVISION_ID = process.env.DIVISION_ID ?? "";
