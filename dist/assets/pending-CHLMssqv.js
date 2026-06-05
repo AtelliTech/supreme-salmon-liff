@@ -1,1 +1,0 @@
-import{c as r}from"./index-DNExBKI6.js";import{a as e,b as s}from"./index-BVA-Vvm8.js";import"./index-D2B9CEYo.js";async function i(){const a=r(),t=await e({api:a});if(t.state!=="NOT_FOUND"){s({result:t});return}}i();
