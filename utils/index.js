@@ -1,5 +1,5 @@
 import liff from "@line/liff";
-import { createApiInstance } from "/api/index.js";
+import { createApi } from "/api/index.js";
 
 const LIFF_ID = import.meta.env.VITE_LIFF_ID;
 
@@ -17,7 +17,7 @@ export function safeRedirect(path) {
 }
 
 export async function resolveUserState({
-  api = createApiInstance(),
+  api = createApi(),
   liffId = LIFF_ID,
 } = {}) {
   await liff.init({ liffId });
@@ -91,8 +91,10 @@ export function routeByUserState({
 export async function resolveUserRoute() {
   
   const result = await resolveUserState();
+
+  console.log({result})
   
-  routeByUserState({ result });
-  
+  // routeByUserState({ result });
+
   return result;
 }

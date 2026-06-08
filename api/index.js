@@ -15,7 +15,7 @@ class ApiError extends Error {
   }
 }
 
-export function createApiInstance(options = {}) {
+export function createApi(options = {}) {
   const api = axios.create({
     baseURL: "https://api.mowi.ilnk.io/api",
     timeout: 3000
@@ -47,8 +47,6 @@ export function createApiInstance(options = {}) {
     },
 
     getProducts(lineUserId, params = {}, requestOptions = {}) {
-      const { customerId, divisionId, categoryId, page, pageSize } = payload;
-
       return api.request({
         method: "GET",
         url: `/liff/${lineUserId}/products`,

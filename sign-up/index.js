@@ -1,10 +1,10 @@
-import { createApiInstance } from "/api/index.js";
+import { createApi } from "/api/index.js";
 import { resolveUserState, routeByUserState } from "/utils/index.js";
 
 main();
 
 async function main() {
-  const api = createApiInstance();
+  const api = createApi();
   const result = await resolveUserState({ api });
 
   if (result.state !== "NOT_FOUND") {
@@ -44,6 +44,9 @@ function setupSignupForm({ api, profile }) {
     try {
       const result = await api.createLineUser(payload);
       console.log("註冊 API 回應:", result);
+      if (result?.data?.success) {
+        routeByUserState({ result: { state: "PENDING", profile, response: result } });
+      }
     } catch (error) {
       console.error("註冊 API 失敗:", error);
     }
