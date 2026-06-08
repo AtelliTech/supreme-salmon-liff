@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const pages = new Set([
   "/orders",
   "/orders/create",
-  "/orders/[id]",
+  "/orders/detail",
   "/products",
   "/sign-up",
   "/pending",
@@ -50,7 +50,7 @@ export default defineConfig({
         pending: resolve(__dirname, "pending/index.html"),
         orders: resolve(__dirname, "orders/index.html"),
         "orders/create": resolve(__dirname, "orders/create/index.html"),
-        "orders/[id]": resolve(__dirname, "orders/[id]/index.html"),
+        "orders/detail": resolve(__dirname, "orders/detail/index.html"),
       },
     },
   },

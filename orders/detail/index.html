@@ -352,16 +352,6 @@
       </div>
     </div>
 
-    <script>
-      MicroModal.init({
-        disableScroll: true,
-      });
-
-      document
-        .getElementById("confirm-cancel-order")
-        .addEventListener("click", () => {
-          MicroModal.close("cancel-order-modal");
-        });
-    </script>
+    <script type="module" src="/orders/detail/index.js"></script>
   </body>
 </html>

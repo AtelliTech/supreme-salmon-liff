@@ -22,16 +22,16 @@ async function main() {
       divisionId: 1,
     })
     .then((res) => {
-      console.log(res);
+      renderPage({
+        productsRes: res.data
+      });
     })
     .catch((err) => {
       console.error(err);
     });
-
-  renderPage();
 }
 
-function renderPage() {
+function renderPage({ productsRes }) {
   // --- DOM elements ---
   const modal = document.getElementById("product-modal");
   const panel = document.getElementById("product-modal-panel");
@@ -49,7 +49,7 @@ function renderPage() {
   const qtyPlusBtn = document.getElementById("modal-qty-plus");
   const qtyValue = document.getElementById("modal-qty-value");
 
-  const openButtons = document.querySelectorAll(".js-open-product-modal");
+  const productContainer = document.querySelector(".product-container");
 
   // --- State ---
   const state = {
@@ -162,8 +162,9 @@ function renderPage() {
   };
 
   // --- Event bindings ---
-  openButtons.forEach((button) => {
-    button.addEventListener("click", () => openModal(button));
+  productContainer.addEventListener("click", (e) => {
+    const button = e.target.closest(".js-open-product-modal");
+    if (button) openModal(button);
   });
 
   closeBtn.addEventListener("click", closeModal);
@@ -179,5 +180,73 @@ function renderPage() {
     if (event.key === "Escape" && modal.getAttribute("aria-hidden") === "false") {
       closeModal();
     }
+  });
+
+
+  renderCategories();
+  renderProducts(productsRes?.data || []);
+}
+
+function renderCategories(categories = [
+    {name: '魚片',},
+    {name: '整魚',},
+]) {
+
+  const container = document.querySelector(".category-container");
+  if (!container) return;
+
+  const allItem = document.createElement("a");
+  allItem.href = "#";
+  allItem.className = "category-item inline-block px-4 py-1.5 bg-salmon-500 text-white text-sm font-medium rounded-full mr-2";
+  allItem.textContent = "全部商品";
+  container.appendChild(allItem);
+
+  categories.forEach((category) => {
+    const name = category.name;
+    const item = document.createElement("a");
+    item.href = "#";
+    item.className = "category-item inline-block px-4 py-1.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-full mr-2 transition-colors hover:bg-gray-200";
+    item.textContent = name;
+    container.appendChild(item);
+  });
+}
+
+function renderProducts(products = []) {
+  const container = document.querySelector(".product-container");
+  if (!container) return;
+
+  products.forEach((product) => {
+    const card = document.createElement("div");
+    card.className = "product-item bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100";
+    card.innerHTML = `
+      <div class="relative pb-[100%]">
+        <img
+          src="${product.img_url || '/placeholder.jpg'}"
+          alt="${product.name || ''}"
+          class="absolute top-0 left-0 w-full h-full object-contain"
+        />
+      </div>
+      <div class="p-2.5 flex-1 flex flex-col">
+        <h3 class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-1"></h3>
+        <p class="product-description text-xs text-gray-400 mb-0.5"></p>
+        <div class="mt-auto pt-2 flex items-end justify-between">
+          <div>
+            <p class="text-red-500 font-bold leading-none text-base"></p>
+          </div>
+          <button
+            class="js-open-product-modal bg-salmon-500 text-white w-7 h-7 rounded-full flex items-center justify-center hover:bg-salmon-600 active:scale-95 transition-transform shadow-sm"
+            data-specs="${product.remark || '標準規格'}"
+          >
+            <i class="fas fa-plus text-sm"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector("h3").textContent = product.name || "";
+    card.querySelector(".product-description").textContent = product.description || "";
+    card.querySelector("p.text-red-500").textContent = `NT$ ${product.unit_price ?? 0}`;
+
+    container.appendChild(card);
   });
 }

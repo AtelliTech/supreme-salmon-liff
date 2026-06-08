@@ -1,4 +1,4 @@
-import { createLiffApi } from "/api/index.js";
+import { createApi } from "/api/index.js";
 
 // Mock data for demonstration - replace with API call
 const mockOrders = [
@@ -108,7 +108,7 @@ class OrderListRenderer {
     this.container = document.querySelector(containerSelector);
     this.orders = [];
     this.currentFilter = "all";
-    this.api = createLiffApi();
+    this.api = createApi();
   }
 
   /**
@@ -221,7 +221,7 @@ class OrderListRenderer {
           <p class="text-xs text-gray-400">${order.timestamp}</p>
           <div class="flex gap-2">
             <a
-              href="/orders/[id]/index.html"
+              href="/orders/detail/index.html?id=${order.id}"
               class="px-3 py-1.5 text-xs font-medium text-gray-600 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
             >
               查看詳情
