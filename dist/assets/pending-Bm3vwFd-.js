@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{c as r}from"./index-D8eY4bh5.js";import{a as e,b as s}from"./index-B1FRwU_w.js";async function o(){const a=r(),t=await e({api:a});if(t.state!=="NOT_FOUND"){s({result:t});return}}o();

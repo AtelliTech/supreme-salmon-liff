@@ -1,1 +1,0 @@
-import{c as o}from"./index-BAFVL54I.js";import{l as i}from"./index-D2B9CEYo.js";t();async function t(){if(await i.init({liffId:"2009395054-rgDD7RPZ"}),!i.isLoggedIn())i.login();else{o();const f=await i.getProfile(),{userId:a}=f}}

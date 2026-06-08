@@ -1,8 +1,6 @@
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-const DEFAULT_BASE_URL = "/api";
-
 class ApiError extends Error {
   constructor(message, options = {}) {
     super(message);
@@ -61,7 +59,7 @@ export function createApi(options = {}) {
     },
 
     createOrder(lineUserId, payload, requestOptions = {}) {
-      return axios.request({
+      return api.request({
         method: "POST",
         url: `/liff/${lineUserId}/orders`,
         data: payload,
