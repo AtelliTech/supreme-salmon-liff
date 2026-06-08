@@ -1,10 +1,10 @@
-import { createLiffApi } from "/api/index.js";
+import { createApiInstance } from "/api/index.js";
 import { resolveUserState, routeByUserState } from "/utils/index.js";
 
 main();
 
 async function main() {
-  const api = createLiffApi();
+  const api = createApiInstance();
   const result = await resolveUserState({ api });
 
   if (result.state !== "NOT_FOUND") {

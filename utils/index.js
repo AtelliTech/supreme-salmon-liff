@@ -1,7 +1,7 @@
 import liff from "@line/liff";
-import { createLiffApi } from "/api/index.js";
+import { createApiInstance } from "/api/index.js";
 
-const LIFF_ID = "2009395054-rgDD7RPZ";
+const LIFF_ID = import.meta.env.VITE_LIFF_ID;
 
 function normalizePath(path) {
   return (path || "/").replace(/\/+$/, "") || "/";
@@ -17,7 +17,7 @@ export function safeRedirect(path) {
 }
 
 export async function resolveUserState({
-  api = createLiffApi(),
+  api = createApiInstance(),
   liffId = LIFF_ID,
 } = {}) {
   await liff.init({ liffId });
@@ -88,9 +88,11 @@ export function routeByUserState({
   return result;
 }
 
-export async function resolveUserRoute(options = {}) {
-  const { api = createLiffApi(), liffId = LIFF_ID } = options;
-  const result = await resolveUserState({ api, liffId });
-  routeByUserState({ result, ...options });
+export async function resolveUserRoute() {
+  
+  const result = await resolveUserState();
+  
+  routeByUserState({ result });
+  
   return result;
 }
