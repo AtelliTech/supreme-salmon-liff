@@ -69,30 +69,30 @@
 
     <!-- Categories / Tabs (Horizontal Scroll) -->
     <div
-      class="bg-white px-3 py-3 overflow-x-auto no-scrollbar whitespace-nowrap shadow-sm mb-2"
+      class="category-container bg-white px-3 py-3 overflow-x-auto no-scrollbar whitespace-nowrap shadow-sm mb-2"
     >
       <a
         href="#"
-        class="inline-block px-4 py-1.5 bg-salmon-500 text-white text-sm font-medium rounded-full mr-2"
+        class="category-item inline-block px-4 py-1.5 bg-salmon-500 text-white text-sm font-medium rounded-full mr-2"
         >全部商品</a
       >
       <a
         href="#"
-        class="inline-block px-4 py-1.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-full mr-2 transition-colors hover:bg-gray-200"
+        class="category-item inline-block px-4 py-1.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-full mr-2 transition-colors hover:bg-gray-200"
         >魚片</a
       >
       <a
         href="#"
-        class="inline-block px-4 py-1.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-full mr-2 transition-colors hover:bg-gray-200"
+        class="category-item inline-block px-4 py-1.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-full mr-2 transition-colors hover:bg-gray-200"
         >整魚</a
       >
     </div>
 
     <!-- Product List -->
-    <main class="p-3 grid grid-cols-2 gap-3">
+    <main class="product-container p-3 grid grid-cols-2 gap-3">
       <!-- Product Item 1 -->
       <div
-        class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100"
+        class="product-item bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100"
       >
         <div class="relative pb-[100%]">
           <img
@@ -246,7 +246,7 @@
 
     <!-- Bottom Navigation Bar (Mobile App Style) -->
     <nav
-      class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 pb-safe z-40"
+      class="bottom-nav fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 pb-safe z-40"
     >
       <div class="flex justify-around items-center h-14">
         <a
