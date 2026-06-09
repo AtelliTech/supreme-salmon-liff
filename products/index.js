@@ -6,9 +6,9 @@ main();
 
 async function main() {
   const api = createApi();
-  const result = await resolveUserState({ api });
+  const result = await resolveUserState();
 
-  if (result.state !== "NOT_FOUND") {
+  if (result.state === "NOT_FOUND") {
     routeByUserState({ result });
     return;
   }

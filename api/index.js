@@ -28,7 +28,7 @@ export function createApi(options = {}) {
         return Promise.reject(
           new ApiError("lineUserId is required", {
             method: "GET",
-            url: "/liff/user_check/{lineUserId}",
+            url: `/liff/user_check/${lineUserId}`,
           }),
         );
       }
@@ -72,7 +72,7 @@ export function createApi(options = {}) {
         return Promise.reject(
           new ApiError("lineUserId is required", {
             method: "PATCH",
-            url: `/liff/${lineUserId}/orders/{number}`,
+            url: `/liff/${lineUserId}/orders/${number}`,
             payload,
           }),
         );
@@ -82,7 +82,7 @@ export function createApi(options = {}) {
         return Promise.reject(
           new ApiError("Order number is required", {
             method: "PATCH",
-            url: `/liff/${lineUserId}/orders/{number}`,
+            url: `/liff/${lineUserId}/orders/${number}`,
             payload,
           }),
         );
@@ -117,7 +117,9 @@ export function createApi(options = {}) {
 }
 
 function mockApi(api) {
-  const mock = new AxiosMockAdapter(api);
+  const mock = new AxiosMockAdapter(api, {
+    onNoMatch: "passthrough",
+  });
 
   mock.onGet("/liff/U05186207f72d445ae6eba79ab4e13998/products").reply(200, {
     status: "Success",

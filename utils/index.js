@@ -91,10 +91,8 @@ export function routeByUserState({
 export async function resolveUserRoute() {
   
   const result = await resolveUserState();
-
-  console.log({result})
   
-  // routeByUserState({ result });
+  routeByUserState({ result });
 
   return result;
 }
