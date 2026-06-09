@@ -7,7 +7,6 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { HTTPError } from "ky";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
 export function ReactQueryProvider({
@@ -15,37 +14,28 @@ export function ReactQueryProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const bid = searchParams.get("bid");
-
   const queryClient = useRef(
     new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+        mutations: {
+          retry: false,
+        },
+      },
       queryCache: new QueryCache({
         onError: (error) => {
           if (error instanceof HTTPError) {
-            if (error.response.status === 401) {
-              if (!bid) {
-                router.push(`/login`);
-                return;
-              }
+            console.log("HTTP status:", error.response.status, error.data);
 
-              router.push(`/login?bid=${bid}`);
-            }
           }
         },
       }),
       mutationCache: new MutationCache({
         onError: (error) => {
           if (error instanceof HTTPError) {
-            if (error.response.status === 401) {
-              if (!bid) {
-                router.push(`/login`);
-                return;
-              }
-              router.push(`/login?bid=${bid}`);
-            }
+            console.log("HTTP status:", error.response.status, error.data);
           }
         },
       }),

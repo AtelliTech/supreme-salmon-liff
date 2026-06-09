@@ -1,4 +1,40 @@
+"use client";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
+import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
+
 export default function Page() {
+  const { liff } = useLIFF();
+  const { data: profile } = useQuery({
+    queryKey: ["liff.profile"],
+    queryFn: async () => {
+      if (!liff) throw new Error("LIFF not initialized");
+      return await liff.getProfile();
+    },
+  });
+
+  const userId = profile?.userId;
+  const displayName = profile?.displayName;
+
+  const { data } = useQuery({
+    queryKey: [userId, "products"],
+    queryFn: async () => {
+      return api
+        .get(`/api/liff/${userId}/products`, {
+          searchParams: {
+            customer_id: 1,
+            // division_id: 1,
+            page: 1,
+            pageSize: 20,
+          },
+        })
+        .json();
+    },
+    enabled: !!userId,
+  });
+
   return (
     <div className="bg-gray-50 pb-32 text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex items-center justify-center bg-white px-4 py-3 shadow-sm">
@@ -8,7 +44,11 @@ export default function Page() {
       <main className="flex flex-col gap-4 p-4">
         <div className="py-4 text-center">
           <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-salmon-100 shadow-inner">
-            <i className="fas fa-user-circle text-4xl text-salmon-500"></i>
+            {/* <i className="fas fa-user-circle text-4xl text-salmon-500"></i> */}
+            <FontAwesomeIcon
+              icon="user-circle"
+              className="text-4xl text-salmon-500"
+            />
           </div>
           <h2 className="font-bold text-gray-800 text-xl">
             歡迎加入 MOWI Taiwan !
@@ -27,24 +67,34 @@ export default function Page() {
 
             <div className="space-y-4 p-4">
               <div>
-                <label htmlFor="display_name" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="display_name"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   顯示名稱 (LINE 暱稱)
                 </label>
                 <div className="relative">
-                  <i className="fab fa-line -translate-y-1/2 absolute top-1/2 left-3 z-10 text-green-500 text-lg"></i>
+                  <FontAwesomeIcon
+                    icon={["fab", "line"]}
+                    className="absolute top-1/2 left-3 z-10 -translate-y-1/2 text-green-500 text-lg"
+                  />
                   <input
                     id="display_name"
                     type="text"
                     name="display_name"
                     className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 py-2.5 pr-3 pl-10 text-gray-500 text-sm focus:outline-none"
                     placeholder="讀取中..."
+                    value={displayName}
                     readOnly
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="name" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="name"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   真實姓名 <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -58,7 +108,10 @@ export default function Page() {
               </div>
 
               <div>
-                <label htmlFor="phone" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="phone"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   聯絡電話 <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -72,7 +125,10 @@ export default function Page() {
               </div>
 
               <div>
-                <label htmlFor="email" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="email"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -97,7 +153,10 @@ export default function Page() {
 
             <div className="space-y-4 p-4">
               <div>
-                <label htmlFor="company_name" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="company_name"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   公司名稱
                 </label>
                 <input
@@ -110,7 +169,10 @@ export default function Page() {
               </div>
 
               <div>
-                <label htmlFor="vat_id" className="mb-1 block font-medium text-gray-600 text-xs">
+                <label
+                  htmlFor="vat_id"
+                  className="mb-1 block font-medium text-gray-600 text-xs"
+                >
                   統一編號
                 </label>
                 <input

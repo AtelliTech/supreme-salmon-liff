@@ -1,3 +1,6 @@
-export default async function Layout({ children }: React.PropsWithChildren) {
+"use client";
+
+export default function Layout({ children }: React.PropsWithChildren) {
+
   return children;
 }

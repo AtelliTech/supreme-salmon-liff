@@ -5,8 +5,9 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
 import AppLayout from "@/components/app-layout";
-
+import { Providers } from "@/components/providers";
 import { cn } from "@/lib/utils";
+import { LIFFProvider } from "@/providers/liff-providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -46,7 +47,11 @@ export default function RootLayout({
     >
       <body>
         <Suspense fallback={<div></div>}>
-          <AppLayout>{children}</AppLayout>
+          <LIFFProvider>
+            <Providers>
+              <AppLayout>{children}</AppLayout>
+            </Providers>
+          </LIFFProvider>
         </Suspense>
       </body>
     </html>
