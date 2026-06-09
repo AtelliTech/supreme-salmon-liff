@@ -28,7 +28,6 @@ export function ReactQueryProvider({
         onError: (error) => {
           if (error instanceof HTTPError) {
             console.log("HTTP status:", error.response.status, error.data);
-
           }
         },
       }),

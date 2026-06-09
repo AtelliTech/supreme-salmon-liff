@@ -76,7 +76,7 @@ export default function Page() {
                 <div className="relative">
                   <FontAwesomeIcon
                     icon={["fab", "line"]}
-                    className="absolute top-1/2 left-3 z-10 -translate-y-1/2 text-green-500 text-lg"
+                    className="-translate-y-1/2 absolute top-1/2 left-3 z-10 text-green-500 text-lg"
                   />
                   <input
                     id="display_name"

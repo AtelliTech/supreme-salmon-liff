@@ -2,12 +2,16 @@ import { Geist_Mono, Inter } from "next/font/google";
 import { Suspense } from "react";
 
 import "./globals.css";
-import type { Metadata, Viewport } from "next";
 
+import { config } from "@fortawesome/fontawesome-svg-core";
+import type { Metadata, Viewport } from "next";
 import AppLayout from "@/components/app-layout";
 import { Providers } from "@/components/providers";
 import { cn } from "@/lib/utils";
 import { LIFFProvider } from "@/providers/liff-providers";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

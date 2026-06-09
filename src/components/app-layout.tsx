@@ -12,13 +12,12 @@ library.add(fas, far, fab);
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { liff } = useLIFF();
-  const router = useRouter();
+  const _router = useRouter();
 
   useEffect(() => {
     if (liff && !liff.isLoggedIn()) {
       liff.login();
     } else {
-      router.push("/sign-up");
     }
   }, [liff]);
 

@@ -48,7 +48,7 @@
 
   --color-salmon-50: #f5f4f3;
   --color-salmon-100: #e6e4e2;
-  --color-salmon-500: #2C2A29;
+  --color-salmon-500: #2c2a29;
   --color-salmon-600: #1f1e1d;
 }
 
@@ -151,6 +151,6 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
-  -webkit-text-fill-color: #374151 !important;
+  -webkit-box-shadow: 0 0 0 30px white inset;
+  -webkit-text-fill-color: #374151;
 }

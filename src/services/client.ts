@@ -1,8 +1,8 @@
-import ky from 'ky';
+import ky from "ky";
 
 export const api = ky.create({
   prefix: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });

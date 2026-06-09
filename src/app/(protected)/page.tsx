@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useLIFF } from "@/providers/liff-providers";
 
 export default function Page() {
