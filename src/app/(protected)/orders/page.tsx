@@ -170,7 +170,10 @@ function OrderCard({ order }: { order: Order }) {
               alt={order.title}
               width={64}
               height={64}
-              className={cn(`h-full w-full object-contain`, order.grayscale ? "grayscale" : "")}
+              className={cn(
+                `h-full w-full object-contain`,
+                order.grayscale ? "grayscale" : "",
+              )}
             />
           </div>
         )}
