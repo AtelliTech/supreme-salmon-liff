@@ -13,7 +13,10 @@ export default function Page() {
           <div className="absolute inset-0 animate-ping rounded-full bg-salmon-50 opacity-75"></div>
 
           <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-salmon-100 shadow-inner">
-            <FontAwesomeIcon icon={faUserClock} className="text-4xl text-salmon-500" />
+            <FontAwesomeIcon
+              icon={faUserClock}
+              className="text-4xl text-salmon-500"
+            />
           </div>
         </div>
 

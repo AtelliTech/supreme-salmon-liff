@@ -49,7 +49,7 @@ export default function RootLayout({
         inter.variable,
       )}
     >
-      <body>
+      <body className="bg-gray-50">
         <Suspense fallback={<div></div>}>
           <LIFFProvider>
             <Providers>
