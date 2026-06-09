@@ -7,9 +7,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <NiceModal.Provider>
       <ReactQueryProvider>
-        <div className="relative mx-auto flex h-dvh max-w-md flex-col overflow-hidden bg-background">
-          {children}
-        </div>
+        {children}
       </ReactQueryProvider>
     </NiceModal.Provider>
   );

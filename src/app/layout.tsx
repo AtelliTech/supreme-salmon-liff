@@ -3,10 +3,9 @@ import { Suspense } from "react";
 
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Toaster } from "sonner";
+
 import AppLayout from "@/components/app-layout";
-import { ThemeProvider } from "@/components/theme-provider";
+
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -47,12 +46,7 @@ export default function RootLayout({
     >
       <body>
         <Suspense fallback={<div></div>}>
-          <NuqsAdapter>
-            <ThemeProvider>
-              <AppLayout>{children}</AppLayout>
-              <Toaster richColors position="top-center" />
-            </ThemeProvider>
-          </NuqsAdapter>
+          <AppLayout>{children}</AppLayout>
         </Suspense>
       </body>
     </html>

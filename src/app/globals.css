@@ -45,6 +45,11 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-salmon-50: #f5f4f3;
+  --color-salmon-100: #e6e4e2;
+  --color-salmon-500: #2C2A29;
+  --color-salmon-600: #1f1e1d;
 }
 
 :root {
@@ -126,4 +131,26 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+/* Support for safe area in iOS browsers/LIFF */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* Input autofill style override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #374151 !important;
 }
