@@ -21,17 +21,17 @@ export default function Page() {
         </div>
 
         <h2 className="mb-3 font-bold text-2xl text-gray-800">資料審核中</h2>
-        <p className="mx-auto mb-2 max-w-[280px] text-gray-500 text-sm leading-relaxed">
+        <p className="mx-auto mb-2 max-w-70 text-gray-500 text-sm leading-relaxed">
           您的會員註冊資料我們已經收到囉！
           <br />
           目前工作人員正在為您加速審核中。
           <br />
         </p>
-        <p className="mx-auto max-w-[280px] text-gray-400 text-xs">
+        <p className="mx-auto max-w-70 text-gray-400 text-xs">
           審核完成後，我們將透過 LINE 官方帳號推播通知您，請耐心等候。
         </p>
 
-        <div className="mt-8 flex w-full max-w-[300px] gap-3 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-sm">
+        <div className="mt-8 flex w-full max-w-75 gap-3 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-sm">
           <i className="fas fa-info-circle mt-0.5 text-salmon-500"></i>
           <div>
             <h4 className="mb-1 font-bold text-gray-700 text-sm">
@@ -54,7 +54,7 @@ export default function Page() {
         </a>
         <div className="mt-4 text-center text-[11px] text-gray-400">
           有任何問題嗎？
-          <a href="#" className="font-bold text-salmon-500 underline">
+          <a href="/#" className="font-bold text-salmon-500 underline">
             聯繫專人客服
           </a>
         </div>
