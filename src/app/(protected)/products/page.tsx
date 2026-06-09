@@ -1,17 +1,25 @@
 "use client";
 
-import { faUser } from "@fortawesome/free-regular-svg-icons";
 import {
-  faFileInvoice,
   faMinus,
   faPlus,
   faShoppingCart,
-  faStore,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import { NavBottom } from "@/components/nav-bottom";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export default function Page() {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
@@ -65,8 +73,8 @@ export default function Page() {
               </div>
               <button
                 type="button"
-                className="js-open-product-modal flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
-                data-specs="300g 厚切|600g 雙片|1kg 家庭號"
+                onClick={() => setOpen(true)}
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
               >
                 <FontAwesomeIcon icon={faPlus} className="text-sm" />
               </button>
@@ -75,69 +83,40 @@ export default function Page() {
         </div>
       </main>
 
-      <div
-        id="product-modal"
-        className="fixed inset-0 z-50 hidden"
-        aria-hidden="true"
-      >
-        <div
-          id="product-modal-backdrop"
-          className="absolute inset-0 bg-black/35 opacity-0 transition-opacity duration-200"
-        ></div>
+      <NavBottom />
 
-        <div
-          id="product-modal-panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="product-modal-title"
-          className="absolute right-0 bottom-0 left-0 max-h-[86vh] translate-y-full overflow-y-auto rounded-t-3xl bg-white pb-safe shadow-2xl transition-transform duration-300"
-        >
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerContent className="max-h-[86vh] rounded-t-3xl pb-safe">
+          <DrawerTitle className="hidden"></DrawerTitle>
+          <DrawerDescription className="hidden"></DrawerDescription>
           <div className="flex items-center justify-between border-gray-100 border-b px-4 py-3">
-            <h2
-              id="product-modal-title"
-              className="font-bold text-base text-gray-800"
-            >
-              商品選購
-            </h2>
-            <button
-              type="button"
-              id="product-modal-close"
-              className="h-8 w-8 rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200"
-              aria-label="關閉"
-            >
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
+            <h2 className="font-bold text-base text-gray-800">商品選購</h2>
+            <DrawerClose asChild>
+              <button
+                type="button"
+                className="h-8 w-8 rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200"
+                aria-label="關閉"
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </DrawerClose>
           </div>
 
-          <div className="space-y-4 p-4">
+          <div className="space-y-4 overflow-y-auto p-4">
             <div className="flex gap-3">
               <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-100">
                 <img
-                  id="modal-product-image"
                   src="/placeholder.jpg"
                   alt="商品圖片"
                   className="h-full w-full object-contain"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h3
-                  id="modal-product-name"
-                  className="font-semibold text-gray-800 text-sm leading-snug"
-                >
+                <h3 className="font-semibold text-gray-800 text-sm leading-snug">
                   商品名稱
                 </h3>
-                <p
-                  id="modal-product-desc"
-                  className="mt-1 text-gray-500 text-xs"
-                >
-                  商品描述
-                </p>
-                <p
-                  id="modal-product-price"
-                  className="mt-2 font-bold text-lg text-red-500"
-                >
-                  NT$ 0
-                </p>
+                <p className="mt-1 text-gray-500 text-xs">商品描述</p>
+                <p className="mt-2 font-bold text-lg text-red-500">NT$ 0</p>
               </div>
             </div>
 
@@ -145,10 +124,7 @@ export default function Page() {
               <h4 className="mb-2 font-semibold text-gray-800 text-sm">
                 商品規格
               </h4>
-              <div
-                id="modal-spec-options"
-                className="grid grid-cols-2 gap-2"
-              ></div>
+              <div className="grid grid-cols-2 gap-2"></div>
             </div>
 
             <div>
@@ -158,7 +134,6 @@ export default function Page() {
               <div className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200">
                 <button
                   type="button"
-                  id="modal-qty-minus"
                   className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                   aria-label="減少數量"
                 >
@@ -168,58 +143,29 @@ export default function Page() {
                   type="number"
                   min="0"
                   step="1"
-                  id="modal-qty-value"
-                  value="1"
+                  defaultValue="1"
                   className="w-16 bg-white text-center font-semibold text-gray-800 focus:outline-none"
                   aria-label="輸入數量"
                 />
                 <button
                   type="button"
-                  id="modal-qty-plus"
                   className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                   aria-label="增加數量"
                 >
-                  <i className="fas fa-plus text-xs"></i>
+                  <FontAwesomeIcon icon={faPlus} className="text-xs" />
                 </button>
               </div>
             </div>
 
             <button
               type="button"
-              id="modal-confirm-btn"
               className="w-full rounded-xl bg-salmon-500 py-3.5 font-semibold text-sm text-white shadow-md transition-all hover:bg-salmon-600 active:scale-[0.98]"
             >
               確定
             </button>
           </div>
-        </div>
-      </div>
-
-      <nav className="fixed bottom-0 bottom-nav left-0 z-40 w-full border-gray-200 border-t bg-white pb-safe">
-        <div className="flex h-14 items-center justify-around">
-          <a
-            href="/#"
-            className="flex h-full w-full flex-col items-center justify-center text-salmon-500"
-          >
-            <FontAwesomeIcon icon={faStore} className="mb-0.5 text-lg" />
-            <span className="font-medium text-[10px]">商品</span>
-          </a>
-          <a
-            href="../orders/index.html"
-            className="flex h-full w-full flex-col items-center justify-center text-gray-400 transition-colors hover:text-gray-600"
-          >
-            <FontAwesomeIcon icon={faFileInvoice} className="mb-0.5 text-lg" />
-            <span className="font-medium text-[10px]">訂單</span>
-          </a>
-          <a
-            href="/#"
-            className="flex h-full w-full flex-col items-center justify-center text-gray-400 transition-colors hover:text-gray-600"
-          >
-            <FontAwesomeIcon icon={faUser} className="mb-0.5 text-lg" />
-            <span className="font-medium text-[10px]">會員</span>
-          </a>
-        </div>
-      </nav>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

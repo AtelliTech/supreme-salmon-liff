@@ -11,7 +11,6 @@
     "format": "biome format --write",
     "release": "release-it",
     "dev:https": "next dev --experimental-https",
-    "web-push": "web-push generate-vapid-keys",
     "openapi": "openapi-typescript https://ad-monitor-api.staging.cyntellitech.com/apidoc?format=yaml -o src/services/types/openapi.ts"
   },
   "dependencies": {
