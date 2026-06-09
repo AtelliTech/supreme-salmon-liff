@@ -1,1 +1,0 @@
-import"../modulepreload-polyfill-B5Qt9EMX.js";e();function e(){MicroModal.init({disableScroll:!0}),document.getElementById("confirm-cancel-order").addEventListener("click",()=>{MicroModal.close("cancel-order-modal")})}
