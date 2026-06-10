@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import numeral from "numeral";
 import { useState } from "react";
+import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
 import {
   Drawer,
@@ -146,7 +147,7 @@ export default function Page() {
 
   const userId = profile?.userId;
 
-  const { data: productsRes } = useQuery({
+  const { data: productsRes, status } = useQuery({
     queryKey: [userId, "products", payload],
     queryFn: async () => {
       if (!userId) throw new Error("User ID not available");
@@ -156,6 +157,80 @@ export default function Page() {
   });
 
   const products = productsRes?.data ?? [];
+
+  const productList = match({ status, products })
+    .with({ status: "pending" }, () => (
+      <>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+            key={i}
+            className="flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+          >
+            <div className="animate-pulse bg-gray-100 pb-[100%]" />
+            <div className="space-y-2 p-2.5">
+              <div className="h-3 animate-pulse rounded bg-gray-100" />
+              <div className="h-3 w-2/3 animate-pulse rounded bg-gray-100" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+            </div>
+          </div>
+        ))}
+      </>
+    ))
+    .with(
+      { status: "success", products: P.when((p) => p.length === 0) },
+      () => (
+        <div className="col-span-2 flex flex-col items-center justify-center py-20 text-center">
+          <p className="font-medium text-gray-500 text-sm">目前沒有商品</p>
+          <p className="mt-1 text-gray-400 text-xs">請稍後再試</p>
+        </div>
+      ),
+    )
+    .with({ status: "success" }, ({ products }) => (
+      <>
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+          >
+            <div className="relative pb-[100%]">
+              <img
+                src={product.img_url || "/placeholder.jpg"}
+                alt={product.name}
+                className="absolute top-0 left-0 h-full w-full object-contain"
+              />
+            </div>
+            <div className="flex flex-1 flex-col p-2.5">
+              <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
+                {product.name}
+              </h3>
+              <p className="product-description mb-0.5 text-gray-400 text-xs">
+                {product.description}
+              </p>
+              <div className="mt-auto flex items-end justify-between pt-2">
+                <p className="font-bold text-base text-red-500 leading-none">
+                  NT$ {numeral(product.unit_price).format("0,0")}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => NiceModal.show(ProductDrawer, { product })}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
+                >
+                  <FontAwesomeIcon icon={faPlus} className="text-sm" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </>
+    ))
+    .with({ status: "error" }, () => (
+      <div className="col-span-2 flex flex-col items-center justify-center py-20 text-center">
+        <p className="font-medium text-gray-500 text-sm">載入失敗</p>
+        <p className="mt-1 text-gray-400 text-xs">請重新整理頁面</p>
+      </div>
+    ))
+    .exhaustive();
 
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
@@ -184,42 +259,7 @@ export default function Page() {
       </div>
 
       <main className="product-container grid grid-cols-2 gap-3 p-3">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
-          >
-            <div className="relative pb-[100%]">
-              <img
-                src={product.img_url || "/placeholder.jpg"}
-                alt={product.name}
-                className="absolute top-0 left-0 h-full w-full object-contain"
-              />
-            </div>
-            <div className="flex flex-1 flex-col p-2.5">
-              <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
-                {product.name}
-              </h3>
-              <p className="product-description mb-0.5 text-gray-400 text-xs">
-                {product.description}
-              </p>
-              <div className="mt-auto flex items-end justify-between pt-2">
-                <div>
-                  <p className="font-bold text-base text-red-500 leading-none">
-                    NT$ {numeral(product.unit_price).format("0,0")}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => NiceModal.show(ProductDrawer, { product })}
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
-                >
-                  <FontAwesomeIcon icon={faPlus} className="text-sm" />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+        {productList}
       </main>
 
       <NavBottom />
