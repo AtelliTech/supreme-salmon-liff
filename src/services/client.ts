@@ -13,7 +13,10 @@ export const api = {
   },
 
   createLineUser(payload: object, requestOptions = {}) {
-    return client.post("api/liff/line_users", { json: payload, ...requestOptions });
+    return client.post("api/liff/line_users", {
+      json: payload,
+      ...requestOptions,
+    });
   },
 
   getProducts(lineUserId: string, searchParams = {}, requestOptions = {}) {
@@ -55,7 +58,7 @@ export const api = {
     searchParams = {},
     requestOptions = {},
   ) {
-    return api.get(`liff/${lineUserId}/orders/${number}`, {
+    return client.get(`liff/${lineUserId}/orders/${number}`, {
       searchParams,
       ...requestOptions,
     });

@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
+import numeral from "numeral";
 import { useState } from "react";
 import { NavBottom } from "@/components/nav-bottom";
 import {
@@ -20,12 +21,37 @@ import {
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 
+type Product = {
+  id: string;
+  img_url: string;
+  name: string;
+  description: string;
+  box_net_weight: number;
+  unit_price: number;
+  remark: string;
+  category: { id: number; name: string };
+};
+
+type ProductsResponse = {
+  status: string;
+  code: number;
+  data: Product[];
+  meta: {
+    page: number;
+    page_size: number;
+    total_count: number;
+    page_count: number;
+  };
+};
+
 export default function Page() {
   const [open, setOpen] = useState(false);
-  const [payload, setPayload] = useState({
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [qty, setQty] = useState(1);
+  const [payload] = useState({
     customer_id: 208682,
     division_id: 240,
-  })
+  });
 
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
@@ -38,20 +64,22 @@ export default function Page() {
 
   const userId = profile?.userId;
 
-  const { data: productsRes, status } = useQuery({
+  const { data: productsRes } = useQuery({
     queryKey: [userId, "products", payload],
     queryFn: async () => {
       if (!userId) throw new Error("User ID not available");
-
-      return api.getProducts(userId, payload);
+      return api.getProducts(userId, payload).json<ProductsResponse>();
     },
     enabled: !!userId,
   });
 
-  const products = productsRes?.data || [];
-  const meta = productsRes?.meta || {};
+  const products = productsRes?.data ?? [];
 
-  console.log({ status, products, meta });
+  function openDrawer(product: Product) {
+    setSelectedProduct(product);
+    setQty(1);
+    setOpen(true);
+  }
 
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
@@ -80,40 +108,42 @@ export default function Page() {
       </div>
 
       <main className="product-container grid grid-cols-2 gap-3 p-3">
-        <div className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="relative pb-[100%]">
-            <img
-              src="/placeholder.jpg"
-              alt="鮭魚"
-              className="absolute top-0 left-0 h-full w-full object-contain"
-            />
-            <div className="absolute top-2 left-2 rounded bg-red-500 px-2 py-0.5 font-bold text-[10px] text-white shadow">
-              熱銷
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+          >
+            <div className="relative pb-[100%]">
+              <img
+                src={product.img_url || "/placeholder.jpg"}
+                alt={product.name}
+                className="absolute top-0 left-0 h-full w-full object-contain"
+              />
             </div>
-          </div>
-          <div className="flex flex-1 flex-col p-2.5">
-            <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
-              頂級挪威鮮切鮭魚菲力 (300g)
-            </h3>
-            <p className="product-description mb-0.5 text-gray-400 text-xs">
-              嚴選大西洋鮭魚，定重切割、貼體包裝
-            </p>
-            <div className="mt-auto flex items-end justify-between pt-2">
-              <div>
-                <p className="font-bold text-base text-red-500 leading-none">
-                  NT$ 380
-                </p>
+            <div className="flex flex-1 flex-col p-2.5">
+              <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
+                {product.name}
+              </h3>
+              <p className="product-description mb-0.5 text-gray-400 text-xs">
+                {product.description}
+              </p>
+              <div className="mt-auto flex items-end justify-between pt-2">
+                <div>
+                  <p className="font-bold text-base text-red-500 leading-none">
+                    NT$ {numeral(product.unit_price).format("0,0")}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => openDrawer(product)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
+                >
+                  <FontAwesomeIcon icon={faPlus} className="text-sm" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
-              >
-                <FontAwesomeIcon icon={faPlus} className="text-sm" />
-              </button>
             </div>
           </div>
-        </div>
+        ))}
       </main>
 
       <NavBottom />
@@ -139,25 +169,22 @@ export default function Page() {
             <div className="flex gap-3">
               <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-100">
                 <img
-                  src="/placeholder.jpg"
-                  alt="商品圖片"
+                  src={selectedProduct?.img_url || "/placeholder.jpg"}
+                  alt={selectedProduct?.name}
                   className="h-full w-full object-contain"
                 />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold text-gray-800 text-sm leading-snug">
-                  商品名稱
+                  {selectedProduct?.name}
                 </h3>
-                <p className="mt-1 text-gray-500 text-xs">商品描述</p>
-                <p className="mt-2 font-bold text-lg text-red-500">NT$ 0</p>
+                <p className="mt-1 text-gray-500 text-xs">
+                  {selectedProduct?.description}
+                </p>
+                <p className="mt-2 font-bold text-lg text-red-500">
+                  NT$ {numeral(selectedProduct?.unit_price).format("0,0")}
+                </p>
               </div>
-            </div>
-
-            <div>
-              <h4 className="mb-2 font-semibold text-gray-800 text-sm">
-                商品規格
-              </h4>
-              <div className="grid grid-cols-2 gap-2"></div>
             </div>
 
             <div>
@@ -167,21 +194,18 @@ export default function Page() {
               <div className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200">
                 <button
                   type="button"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
                   className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                   aria-label="減少數量"
                 >
                   <FontAwesomeIcon icon={faMinus} className="text-xs" />
                 </button>
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  defaultValue="1"
-                  className="w-16 bg-white text-center font-semibold text-gray-800 focus:outline-none"
-                  aria-label="輸入數量"
-                />
+                <span className="w-16 bg-white text-center font-semibold text-gray-800">
+                  {qty}
+                </span>
                 <button
                   type="button"
+                  onClick={() => setQty((q) => q + 1)}
                   className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                   aria-label="增加數量"
                 >
