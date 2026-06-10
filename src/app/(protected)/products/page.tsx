@@ -22,6 +22,10 @@ import { api } from "@/services/client";
 
 export default function Page() {
   const [open, setOpen] = useState(false);
+  const [payload, setPayload] = useState({
+    customer_id: 208682,
+    division_id: 240,
+  })
 
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
@@ -34,19 +38,12 @@ export default function Page() {
 
   const userId = profile?.userId;
 
-  const { data: productsRes } = useQuery({
-    queryKey: [userId, "products"],
+  const { data: productsRes, status } = useQuery({
+    queryKey: [userId, "products", payload],
     queryFn: async () => {
-      return api
-        .get(`api/liff/${userId}/products`, {
-          searchParams: {
-            customer_id: 208682,
-            division_id: 240,
-            page: 1,
-            pageSize: 20,
-          },
-        })
-        .json();
+      if (!userId) throw new Error("User ID not available");
+
+      return api.getProducts(userId, payload);
     },
     enabled: !!userId,
   });
@@ -54,7 +51,7 @@ export default function Page() {
   const products = productsRes?.data || [];
   const meta = productsRes?.meta || {};
 
-  console.log({ products, meta });
+  console.log({ status, products, meta });
 
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
