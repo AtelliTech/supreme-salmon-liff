@@ -22,10 +22,10 @@ export default function Page() {
     queryKey: [userId, "products"],
     queryFn: async () => {
       return api
-        .get(`/api/liff/${userId}/products`, {
+        .get(`api/liff/${userId}/products`, {
           searchParams: {
-            customer_id: 1,
-            // division_id: 1,
+            customer_id: 208682,
+            division_id: 240,
             page: 1,
             pageSize: 20,
           },

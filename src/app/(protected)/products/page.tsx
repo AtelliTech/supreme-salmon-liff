@@ -7,6 +7,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { NavBottom } from "@/components/nav-bottom";
 import {
@@ -16,9 +17,44 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
 
 export default function Page() {
   const [open, setOpen] = useState(false);
+
+  const { liff } = useLIFF();
+  const { data: profile } = useQuery({
+    queryKey: ["liff.profile"],
+    queryFn: async () => {
+      if (!liff) throw new Error("LIFF not initialized");
+      return await liff.getProfile();
+    },
+  });
+
+  const userId = profile?.userId;
+
+  const { data: productsRes } = useQuery({
+    queryKey: [userId, "products"],
+    queryFn: async () => {
+      return api
+        .get(`api/liff/${userId}/products`, {
+          searchParams: {
+            customer_id: 208682,
+            division_id: 240,
+            page: 1,
+            pageSize: 20,
+          },
+        })
+        .json();
+    },
+    enabled: !!userId,
+  });
+
+  const products = productsRes?.data || [];
+  const meta = productsRes?.meta || {};
+
+  console.log({ products, meta });
 
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
