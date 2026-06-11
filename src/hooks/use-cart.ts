@@ -53,47 +53,44 @@ export function useCart() {
     qty: number,
   ) {
     if (qty <= 0) return;
-    setItems((prev) => {
-      const existing = prev.find((i) => i.product_id === product.id);
-      const next = existing
-        ? prev.map((i) =>
-            i.product_id === product.id ? { ...i, qty: i.qty + qty } : i,
-          )
-        : [
-            ...prev,
-            {
-              product_id: product.id,
-              product_img_url: product.img_url,
-              product_name: product.name,
-              product_desc: product.description,
-              box_net_weight: product.box_net_weight,
-              unit_price: product.unit_price,
-              remark: product.remark,
-              qty,
-            },
-          ];
-      writeCart(next);
-      return next;
-    });
+    const prev = readCart();
+    const existing = prev.find((i) => i.product_id === product.id);
+    const next = existing
+      ? prev.map((i) =>
+          i.product_id === product.id ? { ...i, qty: i.qty + qty } : i,
+        )
+      : [
+          ...prev,
+          {
+            product_id: product.id,
+            product_img_url: product.img_url,
+            product_name: product.name,
+            product_desc: product.description,
+            box_net_weight: product.box_net_weight,
+            unit_price: product.unit_price,
+            remark: product.remark,
+            qty,
+          },
+        ];
+    writeCart(next);
+    setItems(next);
   }
 
   function updateQty(productId: string, qty: number) {
-    setItems((prev) => {
-      const next =
-        qty <= 0
-          ? prev.filter((i) => i.product_id !== productId)
-          : prev.map((i) => (i.product_id === productId ? { ...i, qty } : i));
-      writeCart(next);
-      return next;
-    });
+    const prev = readCart();
+    const next =
+      qty <= 0
+        ? prev.filter((i) => i.product_id !== productId)
+        : prev.map((i) => (i.product_id === productId ? { ...i, qty } : i));
+    writeCart(next);
+    setItems(next);
   }
 
   function removeItem(productId: string) {
-    setItems((prev) => {
-      const next = prev.filter((i) => i.product_id !== productId);
-      writeCart(next);
-      return next;
-    });
+    const prev = readCart();
+    const next = prev.filter((i) => i.product_id !== productId);
+    writeCart(next);
+    setItems(next);
   }
 
   function clearCart() {

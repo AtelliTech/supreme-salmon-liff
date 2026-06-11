@@ -18,7 +18,10 @@ export function ProductCard({ product }: { product: Product }) {
     NiceModal.show(ProductDrawer, { product }).then((result) => {
       if (!result) return;
       const { product: selectedProduct, qty } = result as ProductDrawerResult;
+
       addItem(selectedProduct, qty);
+
+      NiceModal.hide(ProductDrawer);
     });
   }
 

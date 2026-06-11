@@ -35,8 +35,12 @@ export const SwitchStoreDialog = NiceModal.create<{ customer: Customer }>(
             </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleSwitch}>否，我要切換店家</AlertDialogCancel>
-            <AlertDialogAction onClick={handleKeep}>是，繼續使用</AlertDialogAction>
+            <AlertDialogCancel onClick={handleSwitch}>
+              否，我要切換店家
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleKeep}>
+              是，繼續使用
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

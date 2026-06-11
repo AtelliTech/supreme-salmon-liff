@@ -143,7 +143,7 @@ export default function Page() {
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </a>
-        <h1 className="font-bold text-gray-800 text-lg">訂單明細</h1>
+        <h1 className="font-bold text-gray-800 text-lg">建立訂單</h1>
         <div className="w-8" />
       </header>
 

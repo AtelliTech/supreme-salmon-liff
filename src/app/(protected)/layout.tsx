@@ -26,13 +26,12 @@ export default function Layout({ children }: React.PropsWithChildren) {
     queryFn: () =>
       api.checkUser(userId as string).json<{ data: { is_customer: string } }>(),
     select: (data) => {
-      
       return {
         ...data,
-        data:{
+        data: {
           ...data.data,
           // is_customer: 'N'
-        }
+        },
       };
     },
     enabled: !!userId,

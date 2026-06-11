@@ -3,7 +3,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useLIFF } from "@/providers/liff-providers";
-import { api } from "@/services/client";
 
 export default function Page() {
   const { liff } = useLIFF();
@@ -17,23 +16,6 @@ export default function Page() {
 
   const userId = profile?.userId;
   const displayName = profile?.displayName;
-
-  const { data } = useQuery({
-    queryKey: [userId, "products"],
-    queryFn: async () => {
-      return api
-        .get(`api/liff/${userId}/products`, {
-          searchParams: {
-            customer_id: 208682,
-            division_id: 240,
-            page: 1,
-            pageSize: 20,
-          },
-        })
-        .json();
-    },
-    enabled: !!userId,
-  });
 
   return (
     <div className="bg-gray-50 pb-32 text-gray-800 antialiased">
