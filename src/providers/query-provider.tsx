@@ -28,6 +28,12 @@ export function ReactQueryProvider({
         onError: (error) => {
           if (error instanceof HTTPError) {
             console.log("HTTP status:", error.response.status, error.data);
+
+            if (error.data?.code === 404 && error.data?.error_message === "User not found") {
+              console.log("User not found. Redirecting to sign-up page.");
+              window.location.href = "/sign-up"; 
+            }
+
           }
         },
       }),

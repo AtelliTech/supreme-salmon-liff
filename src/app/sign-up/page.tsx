@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
 
 export default function Page() {
   const { liff } = useLIFF();
@@ -14,7 +15,9 @@ export default function Page() {
     },
   });
 
-  const userId = profile?.userId;
+  const userId = profile?.userId
+
+
   const displayName = profile?.displayName;
 
   return (

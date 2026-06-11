@@ -24,16 +24,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
   const { data: userCheck, status } = useQuery({
     queryKey: ["/api/liff/user_check", userId],
     queryFn: () =>
-      api.checkUser(userId as string).json<{ data: { is_customer: string } }>(),
-    select: (data) => {
-      return {
-        ...data,
-        data: {
-          ...data.data,
-          // is_customer: 'N'
-        },
-      };
-    },
+      api.checkUser(userId as string).json<{ data: { is_customer: string, code: number } }>(),
     enabled: !!userId,
   });
 
@@ -43,6 +34,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
   useEffect(() => {
     if (isNotCustomer) {
       router.replace("/pending");
+      return;
     }
   }, [isNotCustomer, router]);
 
