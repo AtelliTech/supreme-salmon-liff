@@ -4,9 +4,10 @@ import NiceModal from "@ebay/nice-modal-react";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
+import { useCart } from "@/hooks/use-cart";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 import { ProductCard } from "./_components/product-card";
@@ -23,6 +24,8 @@ export default function Page() {
     null,
   );
 
+  const { clearCart, totalCount } = useCart();
+
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
     queryKey: ["liff.profile"],
@@ -34,6 +37,14 @@ export default function Page() {
 
   const userId = profile?.userId;
 
+  const handleCustomerChange = useCallback(
+    (customer: Customer) => {
+      clearCart();
+      setSelectedCustomer(customer);
+    },
+    [clearCart],
+  );
+
   useEffect(() => {
     if (!userId) return;
 
@@ -43,7 +54,7 @@ export default function Page() {
       if (!saved) {
         const customer = await NiceModal.show(StoreSelectDrawer, { userId });
         if (!customer) return;
-        setSelectedCustomer(customer as Customer);
+        handleCustomerChange(customer as Customer);
         return;
       }
 
@@ -54,14 +65,14 @@ export default function Page() {
       if (wantsSwitch) {
         const customer = await NiceModal.show(StoreSelectDrawer, { userId });
         if (!customer) return;
-        setSelectedCustomer(customer as Customer);
+        handleCustomerChange(customer as Customer);
       } else {
         setSelectedCustomer(saved);
       }
     }
 
     runStoreSelection();
-  }, [userId]);
+  }, [userId, handleCustomerChange]);
 
   const { data: productsRes, status } = useQuery({
     queryKey: [userId, "products", selectedCustomer],
@@ -122,7 +133,7 @@ export default function Page() {
     ))
     .exhaustive();
 
-  async function handleSwitchStore() {
+  async function _handleSwitchStore() {
     if (!userId || !selectedCustomer) return;
     const wantsSwitch = await NiceModal.show(SwitchStoreDialog, {
       customer: selectedCustomer,
@@ -130,7 +141,7 @@ export default function Page() {
     if (wantsSwitch) {
       const customer = await NiceModal.show(StoreSelectDrawer, { userId });
       if (!customer) return;
-      setSelectedCustomer(customer as Customer);
+      handleCustomerChange(customer as Customer);
     }
   }
 
@@ -144,9 +155,11 @@ export default function Page() {
               icon={faShoppingCart}
               className="text-gray-600 text-xl"
             />
-            <span className="-top-1.5 -right-1.5 absolute flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-bold text-[10px] text-white">
-              2
-            </span>
+            {totalCount > 0 && (
+              <span className="-top-1.5 -right-1.5 absolute flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-bold text-[10px] text-white">
+                {totalCount}
+              </span>
+            )}
           </a>
         </div>
       </header>
@@ -154,8 +167,7 @@ export default function Page() {
       {selectedCustomer && (
         <div className="flex items-center justify-between bg-salmon-50 px-4 py-3">
           <span className="text-salmon-700 text-xs">
-            {selectedCustomer.customer_name} ·{" "}
-            {selectedCustomer.division_name}
+            {selectedCustomer.customer_name} · {selectedCustomer.division_name}
           </span>
         </div>
       )}
