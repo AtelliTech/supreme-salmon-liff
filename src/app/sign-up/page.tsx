@@ -1,11 +1,13 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 
 export default function Page() {
+  const router = useRouter();
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
     queryKey: ["liff.profile"],
@@ -15,10 +17,47 @@ export default function Page() {
     },
   });
 
-  const userId = profile?.userId
-
-
+  const userId = profile?.userId;
   const displayName = profile?.displayName;
+
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      line_uid: string;
+      display_name: string;
+      name: string;
+      email: string;
+      phone: string;
+      company_name: string;
+      vat_id: string;
+    }) => api.createLineUser(payload).json(),
+    onSuccess: () => router.replace("/pending"),
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!userId || !displayName) return;
+    const form = new FormData(e.currentTarget);
+
+    console.log({
+      line_uid: userId,
+      display_name: displayName,
+      name: form.get("name") as string,
+      email: form.get("email") as string,
+      phone: form.get("phone") as string,
+      company_name: (form.get("company_name") as string) ?? "",
+      vat_id: (form.get("vat_id") as string) ?? "",
+    });
+
+    mutation.mutate({
+      line_uid: userId,
+      display_name: displayName,
+      name: form.get("name") as string,
+      email: form.get("email") as string,
+      phone: form.get("phone") as string,
+      company_name: (form.get("company_name") as string) ?? "",
+      vat_id: (form.get("vat_id") as string) ?? "",
+    });
+  }
 
   return (
     <div className="bg-gray-50 pb-32 text-gray-800 antialiased">
@@ -29,7 +68,6 @@ export default function Page() {
       <main className="flex flex-col gap-4 p-4">
         <div className="py-4 text-center">
           <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-salmon-100 shadow-inner">
-            {/* <i className="fas fa-user-circle text-4xl text-salmon-500"></i> */}
             <FontAwesomeIcon
               icon="user-circle"
               className="text-4xl text-salmon-500"
@@ -43,7 +81,7 @@ export default function Page() {
           </p>
         </div>
 
-        <form id="signup-form" className="space-y-4">
+        <form id="signup-form" className="space-y-4" onSubmit={handleSubmit}>
           <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
             <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
               <i className="fas fa-id-card mr-2 text-salmon-500"></i>
@@ -180,10 +218,11 @@ export default function Page() {
           <button
             type="submit"
             form="signup-form"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-salmon-500 py-3.5 font-bold text-base text-white shadow-md transition-all hover:bg-salmon-600 active:scale-[0.98]"
+            disabled={mutation.isPending}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-salmon-500 py-3.5 font-bold text-base text-white shadow-md transition-all hover:bg-salmon-600 active:scale-[0.98] disabled:opacity-60"
           >
             <i className="fas fa-check-circle text-sm opacity-90"></i>{" "}
-            註冊並送出
+            {mutation.isPending ? "送出中..." : "註冊並送出"}
           </button>
           <div className="mt-3 pb-1 text-center text-[10px] text-gray-400">
             點擊送出即表示您同意我們的

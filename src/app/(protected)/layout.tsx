@@ -24,7 +24,9 @@ export default function Layout({ children }: React.PropsWithChildren) {
   const { data: userCheck, status } = useQuery({
     queryKey: ["/api/liff/user_check", userId],
     queryFn: () =>
-      api.checkUser(userId as string).json<{ data: { is_customer: string, code: number } }>(),
+      api
+        .checkUser(userId as string)
+        .json<{ data: { is_customer: string; code: number } }>(),
     enabled: !!userId,
   });
 
