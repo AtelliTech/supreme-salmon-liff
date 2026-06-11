@@ -4,9 +4,12 @@ import NiceModal from "@ebay/nice-modal-react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
+import { useCart } from "@/hooks/use-cart";
 import { type Product, ProductDrawer } from "./product-drawer";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCart();
+
   return (
     <div className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="relative pb-[100%]">
@@ -33,7 +36,16 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
           <button
             type="button"
-            onClick={() => NiceModal.show(ProductDrawer, { product })}
+            onClick={() => {
+              NiceModal.show(ProductDrawer, { product }).then((result) => {
+                if (!result) return;
+                const { product: p, qty } = result as {
+                  product: Product;
+                  qty: number;
+                };
+                addItem(p, qty);
+              });
+            }}
             className="flex h-7 w-7 items-center justify-center rounded-full bg-salmon-500 text-white shadow-sm transition-transform hover:bg-salmon-600 active:scale-95"
           >
             <FontAwesomeIcon icon={faPlus} className="text-sm" />
