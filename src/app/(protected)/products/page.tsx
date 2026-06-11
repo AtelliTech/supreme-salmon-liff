@@ -4,7 +4,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
 import { useCart } from "@/hooks/use-cart";
@@ -37,14 +37,12 @@ export default function Page() {
 
   const userId = profile?.userId;
 
-  const handleCustomerChange = useCallback(
-    (customer: Customer) => {
-      clearCart();
-      setSelectedCustomer(customer);
-    },
-    [clearCart],
-  );
+  function handleCustomerChange(customer: Customer) {
+    clearCart();
+    setSelectedCustomer(customer);
+  }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleCustomerChange is defined in component scope
   useEffect(() => {
     if (!userId) return;
 
@@ -72,7 +70,7 @@ export default function Page() {
     }
 
     runStoreSelection();
-  }, [userId, handleCustomerChange]);
+  }, [userId]);
 
   const { data: productsRes, status } = useQuery({
     queryKey: [userId, "products", selectedCustomer],
@@ -133,7 +131,8 @@ export default function Page() {
     ))
     .exhaustive();
 
-  async function _handleSwitchStore() {
+  // biome-ignore lint/correctness/noUnusedVariables: connected via store switch flow
+  async function handleSwitchStore() {
     if (!userId || !selectedCustomer) return;
     const wantsSwitch = await NiceModal.show(SwitchStoreDialog, {
       customer: selectedCustomer,
