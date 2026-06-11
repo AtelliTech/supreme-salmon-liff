@@ -34,6 +34,28 @@ type CheckUserResponse = {
   };
 };
 
+type CreateOrderPayload = {
+  deliver_date: string;
+  address_id: string;
+  customer_id: string;
+  division_id: string;
+  remark: string;
+  items: Array<{
+    product_id: string;
+    product_img_url: string;
+    product_name: string;
+    product_desc: string;
+    box_net_weight: string;
+    unit: string;
+    quantity: string;
+    price: string;
+    weight: string;
+    sub_total: string;
+    final_total: string;
+    remark: string;
+  }>;
+};
+
 export default function Page() {
   const router = useRouter();
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
@@ -72,7 +94,7 @@ export default function Page() {
   }, [selectedCustomer, router]);
 
   const mutation = useMutation({
-    mutationFn: (payload: object) =>
+    mutationFn: (payload: CreateOrderPayload) =>
       api.createOrder(userId as string, payload).json(),
     onSuccess: () => {
       clearCart();
@@ -87,7 +109,7 @@ export default function Page() {
 
   function handleSubmit() {
     if (!userId || !selectedCustomer || items.length === 0) return;
-    const payload = {
+    const payload: CreateOrderPayload = {
       deliver_date: "",
       address_id: "",
       customer_id: selectedCustomer.customer_id,
