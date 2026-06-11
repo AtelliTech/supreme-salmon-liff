@@ -1,14 +1,55 @@
+'use client';
 import { faUserClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
 
 export default function Page() {
+  const router = useRouter();
+  const { liff } = useLIFF();
+
+  const { data: profile } = useQuery({
+    queryKey: ["liff.profile"],
+    queryFn: async () => {
+      if (!liff) throw new Error("LIFF not initialized");
+      return await liff.getProfile();
+    },
+    enabled: !!liff,
+  });
+
+  const userId = profile?.userId;
+
+  const { data: userCheck, status } = useQuery({
+    queryKey: ["/api/liff/user_check", userId],
+    queryFn: () =>
+      api.checkUser(userId as string).json<{ data: { is_customer: string } }>(),
+    enabled: !!userId,
+  });
+
+  useEffect(() => {
+    if (status === "success" && userCheck?.data?.is_customer === "Y") {
+      router.replace("/products");
+    }
+  }, [status, userCheck, router]);
+
+  if (status !== "success") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-gray-500">正在檢查會員資格...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 pt-safe pb-safe text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex shrink-0 items-center justify-center bg-white px-4 py-3 shadow-sm">
         <h1 className="font-bold text-gray-800 text-lg">審核中</h1>
       </header>
 
-      <main className="mt-[-10vh] flex flex-1 flex-col items-center justify-center p-6 text-center">
+      <main className="flex flex-1 flex-col items-center justify-center p-6 text-center">
         <div className="relative mb-8">
           <div className="absolute inset-0 animate-ping rounded-full bg-salmon-50 opacity-75"></div>
 
@@ -46,12 +87,15 @@ export default function Page() {
       </main>
 
       <div className="z-40 w-full shrink-0 px-4 py-6">
-        <a
-          href="/products"
+        <button
+          onClick={() => {
+            window.close();
+          }}
+          type="button"
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white py-3.5 font-bold text-base text-gray-700 shadow-sm transition-all hover:bg-gray-50 active:scale-[0.98]"
         >
           <i className="fas fa-times text-sm opacity-80"></i> 關閉視窗
-        </a>
+        </button>
         <div className="mt-4 text-center text-[11px] text-gray-400">
           有任何問題嗎？
           <a href="/#" className="font-bold text-salmon-500 underline">

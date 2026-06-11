@@ -1,21 +1,27 @@
 "use client";
 
+import NiceModal from "@ebay/nice-modal-react";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 import { ProductCard } from "./_components/product-card";
 import type { ProductsResponse } from "./_components/product-drawer";
+import {
+  type Customer,
+  loadCustomer,
+  StoreSelectDrawer,
+} from "./_components/store-select-drawer";
+import { SwitchStoreDialog } from "./_components/switch-store-dialog";
 
 export default function Page() {
-  const [payload] = useState({
-    customer_id: 208682,
-    division_id: 240,
-  });
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
 
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
@@ -28,13 +34,47 @@ export default function Page() {
 
   const userId = profile?.userId;
 
+  useEffect(() => {
+    if (!userId) return;
+
+    async function runStoreSelection() {
+      const saved = loadCustomer();
+
+      if (!saved) {
+        const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+        if (!customer) return;
+        setSelectedCustomer(customer as Customer);
+        return;
+      }
+
+      const wantsSwitch = await NiceModal.show(SwitchStoreDialog, {
+        customer: saved,
+      });
+
+      if (wantsSwitch) {
+        const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+        if (!customer) return;
+        setSelectedCustomer(customer as Customer);
+      } else {
+        setSelectedCustomer(saved);
+      }
+    }
+
+    runStoreSelection();
+  }, [userId]);
+
   const { data: productsRes, status } = useQuery({
-    queryKey: [userId, "products", payload],
+    queryKey: [userId, "products", selectedCustomer],
     queryFn: async () => {
-      if (!userId) throw new Error("User ID not available");
-      return api.getProducts(userId, payload).json<ProductsResponse>();
+      if (!userId || !selectedCustomer) throw new Error("Not ready");
+      return api
+        .getProducts(userId, {
+          customer_id: selectedCustomer.customer_id,
+          division_id: selectedCustomer.division_id,
+        })
+        .json<ProductsResponse>();
     },
-    enabled: !!userId,
+    enabled: !!userId && !!selectedCustomer,
   });
 
   const products = productsRes?.data ?? [];
@@ -82,6 +122,18 @@ export default function Page() {
     ))
     .exhaustive();
 
+  async function handleSwitchStore() {
+    if (!userId || !selectedCustomer) return;
+    const wantsSwitch = await NiceModal.show(SwitchStoreDialog, {
+      customer: selectedCustomer,
+    });
+    if (wantsSwitch) {
+      const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+      if (!customer) return;
+      setSelectedCustomer(customer as Customer);
+    }
+  }
+
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
@@ -98,6 +150,15 @@ export default function Page() {
           </a>
         </div>
       </header>
+
+      {selectedCustomer && (
+        <div className="flex items-center justify-between bg-salmon-50 px-4 py-3">
+          <span className="text-salmon-700 text-xs">
+            {selectedCustomer.customer_name} ·{" "}
+            {selectedCustomer.division_name}
+          </span>
+        </div>
+      )}
 
       <div className="category-container no-scrollbar mb-2 overflow-x-auto whitespace-nowrap bg-white px-3 py-3 shadow-sm">
         <a
