@@ -247,13 +247,13 @@ export default function Page() {
                 htmlFor="store"
                 className="mb-1 block font-medium text-gray-600 text-xs"
               >
-                店別 <span className="text-red-500">*</span>
+                選擇地址 <span className="text-red-500">*</span>
               </label>
               <select
                 id="store"
                 className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               >
-                <option value="">選擇店別</option>
+                <option value="">選擇地址</option>
                 <option value="TPE">饗食天堂 - 台北市</option>
                 <option value="NWT">饗食天堂 - 新北市</option>
               </select>
