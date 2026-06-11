@@ -52,6 +52,7 @@ export function useCart() {
     },
     qty: number,
   ) {
+    if (qty <= 0) return;
     setItems((prev) => {
       const existing = prev.find((i) => i.product_id === product.id);
       const next = existing
