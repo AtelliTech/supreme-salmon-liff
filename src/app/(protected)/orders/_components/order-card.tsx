@@ -231,7 +231,7 @@ export function OrderCard({ order }: { order: Order }) {
       <div className="flex items-center justify-between border-gray-100 border-t bg-white px-4 py-3">
         <p className="text-gray-400 text-xs">{order.timestamp}</p>
         <Link
-          href={`/orders/detail?id=${order.id}`}
+          href={`/orders/${order.id}`}
           className="rounded-full border border-gray-200 px-3 py-1.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-50"
         >
           查看詳情

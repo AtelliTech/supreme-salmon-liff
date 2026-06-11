@@ -16,11 +16,11 @@ import { OrderStatusCard } from "./_components/order-status-card";
 import type { OrderDetailResponse } from "./_components/types";
 
 export default function Page({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { id } = use(searchParams);
+  const { id } = use(params);
   const orderNumber = typeof id === "string" ? id : undefined;
   const dialogRef = useRef<HTMLDialogElement>(null);
 
