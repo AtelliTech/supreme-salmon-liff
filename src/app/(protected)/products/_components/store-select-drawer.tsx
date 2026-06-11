@@ -92,7 +92,14 @@ export const StoreSelectDrawer = NiceModal.create<{ userId: string }>(
               </div>
             )}
 
-            {status === "success" && (
+            {status === "success" && customers.length === 0 && (
+              <div className="flex flex-col items-center gap-2 py-10 text-center">
+                <p className="text-gray-500 text-sm">目前沒有可選店家</p>
+                <p className="text-gray-400 text-xs">請聯絡客服</p>
+              </div>
+            )}
+
+            {status === "success" && customers.length > 0 && (
               <ul className="divide-y divide-gray-100 p-2">
                 {customers.map((c) => (
                   <li key={`${c.customer_id}-${c.division_id}`}>
