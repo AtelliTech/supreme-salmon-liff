@@ -163,7 +163,7 @@ export default function Page() {
       <>
         {Array.from({ length: 6 }).map((_, i) => (
           <div
-          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
             key={i}
             className="flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
           >

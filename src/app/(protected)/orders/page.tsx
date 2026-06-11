@@ -8,11 +8,16 @@ import {
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
 import { cn } from "@/lib/utils";
+import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
 
 type OrderStatus =
   | "processing"
@@ -21,6 +26,34 @@ type OrderStatus =
   | "completed"
   | "cancelled";
 type FilterKey = "all" | OrderStatus;
+
+type ApiOrder = {
+  id: number;
+  order_date: string;
+  number: string;
+  deliver_date: string;
+  address: { id: string; name: string; address: string };
+  customer: { id: string; name: string; vat_id: string };
+  division: { id: string; name: string };
+  remark: string;
+  item_count: number;
+  amount: number;
+  final_amount: number;
+  state: number;
+  ship_status: number;
+};
+
+type OrdersResponse = {
+  status: string;
+  code: number;
+  data: ApiOrder[];
+  meta: {
+    page: number;
+    page_size: number;
+    total_count: number;
+    page_count: number;
+  };
+};
 
 type Order = {
   id: string;
@@ -40,84 +73,79 @@ type Order = {
   | { multiImage: true; images: string[]; singleImage?: never; image?: never }
 );
 
-const MOCK_ORDERS: Order[] = [
-  {
-    id: "ORD-20260309-001",
-    status: "processing",
+const STATUS_CONFIG: Record<
+  OrderStatus,
+  Pick<
+    Order,
+    | "icon"
+    | "iconColor"
+    | "statusLabel"
+    | "statusBg"
+    | "statusColor"
+    | "grayscale"
+  >
+> = {
+  processing: {
     icon: faBox,
     iconColor: "text-salmon-500",
     statusLabel: "處理中",
     statusBg: "bg-salmon-50",
     statusColor: "text-salmon-600",
-    title: "頂級挪威鮮切鮭魚菲力 等",
-    itemCount: 3,
-    total: 1280,
-    image: "/placeholder.jpg",
-    timestamp: "2026/03/09 10:30",
-    singleImage: true,
   },
-  {
-    id: "ORD-20260310-055",
-    status: "established",
+  established: {
     icon: faCheck,
     iconColor: "text-blue-500",
     statusLabel: "已成立",
     statusBg: "bg-blue-50",
     statusColor: "text-blue-600",
-    title: "紐西蘭青口貝 等",
-    itemCount: 1,
-    total: 420,
-    image: "/placeholder.jpg",
-    timestamp: "2026/03/10 11:20",
-    singleImage: true,
   },
-  {
-    id: "ORD-20260308-042",
-    status: "pending",
+  pending: {
     icon: faWallet,
     iconColor: "text-orange-400",
     statusLabel: "待收貨",
     statusBg: "bg-orange-50",
     statusColor: "text-orange-600",
-    title: "智利厚切鮭魚排 等",
-    itemCount: 2,
-    total: 770,
-    images: ["/placeholder.jpg", "/placeholder.jpg"],
-    timestamp: "2026/03/08 09:15",
-    multiImage: true,
   },
-  {
-    id: "ORD-20260305-088",
-    status: "completed",
+  completed: {
     icon: faCheckCircle,
     iconColor: "text-gray-400",
     statusLabel: "已完成",
     statusBg: "bg-gray-100",
     statusColor: "text-gray-500",
-    title: "嚴選北海道生食級鮭魚卵",
-    itemCount: 1,
-    total: 890,
-    image: "/placeholder.jpg",
-    timestamp: "2026/03/05 14:20",
-    singleImage: true,
     grayscale: true,
   },
-  {
-    id: "ORD-20260304-012",
-    status: "cancelled",
+  cancelled: {
     icon: faTimesCircle,
     iconColor: "text-red-400",
     statusLabel: "已取消",
     statusBg: "bg-red-50",
     statusColor: "text-red-600",
-    title: "日本冷凍扇貝 等",
-    itemCount: 2,
-    total: 650,
-    image: "/placeholder.jpg",
-    timestamp: "2026/03/04 16:45",
-    singleImage: true,
   },
-];
+};
+
+function getOrderStatus(state: number): OrderStatus {
+  return match(state)
+    .with(0, () => "processing" as const)
+    .with(1, () => "established" as const)
+    .with(2, () => "pending" as const)
+    .with(3, () => "completed" as const)
+    .otherwise(() => "cancelled" as const);
+}
+
+function mapApiOrder(order: ApiOrder): Order {
+  const status = getOrderStatus(order.state);
+  return {
+    id: order.number,
+    status,
+    ...STATUS_CONFIG[status],
+    title: order.customer.name,
+    itemCount: order.item_count,
+    total: order.amount,
+    timestamp: dayjs(order.order_date).format("YYYY/MM/DD HH:mm"),
+    singleImage: true,
+    image: "/placeholder.jpg",
+  };
+}
 
 const TABS: { key: FilterKey; label: string }[] = [
   { key: "all", label: "全部" },
@@ -171,7 +199,7 @@ function OrderCard({ order }: { order: Order }) {
               width={64}
               height={64}
               className={cn(
-                `h-full w-full object-contain`,
+                "h-full w-full object-contain",
                 order.grayscale ? "grayscale" : "",
               )}
             />
@@ -210,10 +238,75 @@ function OrderCard({ order }: { order: Order }) {
 export default function Page() {
   const [filter, setFilter] = useState<FilterKey>("all");
 
+  const { liff } = useLIFF();
+  const { data: profile } = useQuery({
+    queryKey: ["liff.profile"],
+    queryFn: async () => {
+      if (!liff) throw new Error("LIFF not initialized");
+      return await liff.getProfile();
+    },
+  });
+
+  const userId = profile?.userId;
+
+  const { data: ordersRes, status } = useQuery({
+    queryKey: [userId, "orders"],
+    queryFn: async () => {
+      if (!userId) throw new Error("User ID not available");
+      return api.getOrders(userId).json<OrdersResponse>();
+    },
+    enabled: !!userId,
+  });
+
+  const allOrders = (ordersRes?.data ?? []).map(mapApiOrder);
   const filtered =
-    filter === "all"
-      ? MOCK_ORDERS
-      : MOCK_ORDERS.filter((o) => o.status === filter);
+    filter === "all" ? allOrders : allOrders.filter((o) => o.status === filter);
+
+  const orderList = match({ status, orders: filtered })
+    .with({ status: "pending" }, () => (
+      <>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+            key={i}
+            className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+          >
+            <div className="flex items-center justify-between border-gray-100 border-b bg-gray-50/50 px-4 py-3">
+              <div className="h-4 w-40 animate-pulse rounded bg-gray-100" />
+              <div className="h-5 w-14 animate-pulse rounded-md bg-gray-100" />
+            </div>
+            <div className="flex items-center gap-3 p-4">
+              <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-gray-100" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 animate-pulse rounded bg-gray-100" />
+                <div className="h-3 w-2/3 animate-pulse rounded bg-gray-100" />
+                <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </>
+    ))
+    .with({ status: "success", orders: P.when((o) => o.length === 0) }, () => (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <p className="font-medium text-gray-500 text-sm">目前沒有訂單</p>
+        <p className="mt-1 text-gray-400 text-xs">請稍後再試</p>
+      </div>
+    ))
+    .with({ status: "success" }, ({ orders }) => (
+      <>
+        {orders.map((order) => (
+          <OrderCard key={order.id} order={order} />
+        ))}
+      </>
+    ))
+    .with({ status: "error" }, () => (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <p className="font-medium text-gray-500 text-sm">載入失敗</p>
+        <p className="mt-1 text-gray-400 text-xs">請重新整理頁面</p>
+      </div>
+    ))
+    .exhaustive();
 
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
@@ -247,11 +340,7 @@ export default function Page() {
         })}
       </div>
 
-      <main className="flex flex-col gap-3 p-3">
-        {filtered.map((order) => (
-          <OrderCard key={order.id} order={order} />
-        ))}
-      </main>
+      <main className="flex flex-col gap-3 p-3">{orderList}</main>
 
       <NavBottom />
     </div>

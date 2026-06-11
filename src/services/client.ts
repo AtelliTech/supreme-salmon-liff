@@ -45,9 +45,9 @@ export const api = {
     });
   },
 
-  getOrders(lineUserId: string, payload = {}, requestOptions = {}) {
-    return client.post(`api/liff/${lineUserId}/orders`, {
-      json: payload,
+  getOrders(lineUserId: string, searchParams = {}, requestOptions = {}) {
+    return client.get(`api/liff/${lineUserId}/orders`, {
+      searchParams,
       ...requestOptions,
     });
   },
