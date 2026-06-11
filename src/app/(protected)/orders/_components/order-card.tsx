@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
 import { match } from "ts-pattern";
 import { cn } from "@/lib/utils";
@@ -153,7 +152,7 @@ export function mapApiOrder(order: ApiOrder): Order {
     total: order.amount,
     timestamp: dayjs(order.order_date).format("YYYY/MM/DD HH:mm"),
     singleImage: true,
-    image: "/placeholder.jpg",
+    image: "",
   };
 }
 
@@ -180,19 +179,21 @@ export function OrderCard({ order }: { order: Order }) {
                 key={`${order.id}-img-${idx}`}
                 className={`h-12 w-12 overflow-hidden rounded-full border-2 border-white shadow-sm ${idx === 0 ? "z-20 bg-white" : "z-10 bg-gray-100"}`}
               >
-                <Image
+                {img ? (<img
                   src={img}
                   alt={order.title}
                   width={48}
                   height={48}
                   className="h-full w-full object-contain"
-                />
+                />) : (
+                  <div className="h-full w-full animate-pulse bg-gray-100" />
+                )}
               </div>
             ))}
           </div>
         ) : (
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
-            <Image
+            {order.image ? (<img
               src={order.image}
               alt={order.title}
               width={64}
@@ -201,7 +202,9 @@ export function OrderCard({ order }: { order: Order }) {
                 "h-full w-full object-contain",
                 order.grayscale ? "grayscale" : "",
               )}
-            />
+            />) : (
+              <div className="h-full w-full animate-pulse bg-gray-100" />
+            )}
           </div>
         )}
 
