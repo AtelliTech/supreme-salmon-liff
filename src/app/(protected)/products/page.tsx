@@ -152,18 +152,11 @@ export default function Page() {
       </header>
 
       {selectedCustomer && (
-        <div className="flex items-center justify-between bg-salmon-50 px-4 py-2">
+        <div className="flex items-center justify-between bg-salmon-50 px-4 py-3">
           <span className="text-salmon-700 text-xs">
-            目前店家：{selectedCustomer.customer_name} ·{" "}
+            {selectedCustomer.customer_name} ·{" "}
             {selectedCustomer.division_name}
           </span>
-          <button
-            type="button"
-            onClick={handleSwitchStore}
-            className="rounded-full bg-salmon-100 px-3 py-1 font-medium text-salmon-700 text-xs transition-colors hover:bg-salmon-200"
-          >
-            切換
-          </button>
         </div>
       )}
 

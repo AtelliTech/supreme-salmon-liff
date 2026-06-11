@@ -6,7 +6,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -31,14 +30,13 @@ export const SwitchStoreDialog = NiceModal.create<{ customer: Customer }>(
       <AlertDialog open={modal.visible} onOpenChange={() => {}}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>切換店家？</AlertDialogTitle>
-            <AlertDialogDescription>
-              目前選擇：{customer.customer_name} · {customer.division_name}
-            </AlertDialogDescription>
+            <AlertDialogTitle>
+              繼續使用 {customer.customer_name} · {customer.division_name} 嗎？
+            </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleKeep}>否</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSwitch}>是</AlertDialogAction>
+            <AlertDialogCancel onClick={handleSwitch}>否，我要切換店家</AlertDialogCancel>
+            <AlertDialogAction onClick={handleKeep}>是，繼續使用</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
