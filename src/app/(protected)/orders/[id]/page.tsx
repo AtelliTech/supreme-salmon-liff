@@ -12,10 +12,89 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { use, useRef } from "react";
+import { match, P } from "ts-pattern";
+import { useLIFF } from "@/providers/liff-providers";
+import { api } from "@/services/client";
+import { getOrderStatus } from "../_components/order-card";
 
-export default function Page() {
+type OrderDetailItem = {
+  product_id: string;
+  product_img_url: string;
+  product_name: string;
+  product_desc: string;
+  unit: string;
+  quantity: number;
+  price: number;
+  remark: string;
+};
+
+type OrderDetail = {
+  id: number;
+  order_date: string;
+  number: string;
+  deliver_date: string;
+  address: { id: string; name: string; address: string };
+  customer: { id: string; name: string; vat_id: string };
+  remark: string;
+  amount: number;
+  final_amount: number;
+  state: number;
+  ship_status: number;
+  items: OrderDetailItem[];
+};
+
+type OrderDetailResponse = {
+  status: string;
+  code: number;
+  data: OrderDetail;
+};
+
+const STATUS_DISPLAY: Record<
+  ReturnType<typeof getOrderStatus>,
+  { title: string; desc: string }
+> = {
+  processing: { title: "商家處理中", desc: "預計於 1-2 個工作天內出貨及配發單號" },
+  established: { title: "訂單已成立", desc: "商家已確認訂單" },
+  pending: { title: "待收貨", desc: "商品已出貨，請注意配送狀態" },
+  completed: { title: "訂單已完成", desc: "感謝您的訂購" },
+  cancelled: { title: "訂單已取消", desc: "如有問題請聯繫客服" },
+};
+
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { id } = use(searchParams);
+  const orderNumber = typeof id === "string" ? id : undefined;
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const { liff } = useLIFF();
+  const { data: profile } = useQuery({
+    queryKey: ["liff.profile"],
+    queryFn: async () => {
+      if (!liff) throw new Error("LIFF not initialized");
+      return await liff.getProfile();
+    },
+  });
+
+  const userId = profile?.userId;
+
+  const { data: orderRes, status } = useQuery({
+    queryKey: [userId, "orders", orderNumber],
+    queryFn: () => {
+      if (!userId || !orderNumber) throw new Error("Missing userId or orderNumber");
+      return api.getOrderDetail(userId, orderNumber).json<OrderDetailResponse>();
+    },
+    enabled: !!userId && !!orderNumber,
+  });
+
+  const order = orderRes?.data;
+  const orderStatus = order ? getOrderStatus(order.state) : "processing";
+  const statusDisplay = STATUS_DISPLAY[orderStatus];
 
   return (
     <div className="bg-gray-50 pb-24 text-gray-800 antialiased">
@@ -27,172 +106,206 @@ export default function Page() {
           <FontAwesomeIcon icon={faChevronLeft} />
         </a>
         <h1 className="font-bold text-gray-800 text-lg">訂單詳情</h1>
-        <div className="w-8"></div>
+        <div className="w-8" />
       </header>
 
       <main className="flex flex-col gap-3 p-3">
-        <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-          <div className="relative z-10 mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-salmon-200 bg-salmon-100 text-salmon-500 shadow-sm">
-            <FontAwesomeIcon icon={faBoxOpen} className="text-2xl" />
-          </div>
-          <h2 className="relative z-10 mb-1 font-bold text-gray-800 text-xl">
-            商家處理中
-          </h2>
-          <p className="relative z-10 text-gray-500 text-sm">
-            預計於 1-2 個工作天內出貨及配發單號
-          </p>
-        </div>
-
-        <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
-            <FontAwesomeIcon
-              icon={faShoppingBag}
-              className="mr-2 text-salmon-500"
-            />
-            <h3 className="font-bold text-gray-700 text-sm">商品明細</h3>
-          </div>
-
-          <div className="flex flex-col gap-4 p-4">
-            <div className="flex gap-3">
-              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-100 shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?auto=format&fit=crop&w=150&q=80"
-                  alt="頂級挪威鮮切鮭魚菲力"
-                  className="h-full w-full object-cover"
-                />
+        {match({ status, order })
+          .with({ status: "pending" }, () => (
+            <>
+              <div className="overflow-hidden rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                <div className="mx-auto mb-3 h-14 w-14 animate-pulse rounded-full bg-gray-100" />
+                <div className="mx-auto mb-1 h-6 w-32 animate-pulse rounded bg-gray-100" />
+                <div className="mx-auto h-4 w-48 animate-pulse rounded bg-gray-100" />
               </div>
-              <div className="flex flex-1 flex-col">
-                <h4 className="line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
-                  頂級挪威鮮切鮭魚菲力
-                </h4>
-                <p className="mt-1 text-[11px] text-gray-500">
-                  規格: 300g (厚切)
-                </p>
-                <div className="mt-auto flex items-end justify-between">
-                  <span className="font-bold text-red-500 text-sm">
-                    NT$ 380
-                  </span>
-                  <span className="font-medium text-gray-500 text-xs">x 2</span>
+              <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                <div className="h-10 animate-pulse bg-gray-50" />
+                <div className="space-y-3 p-4">
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+                    <div key={i} className="flex gap-3">
+                      <div className="h-20 w-20 animate-pulse rounded-lg bg-gray-100" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 animate-pulse rounded bg-gray-100" />
+                        <div className="h-3 w-2/3 animate-pulse rounded bg-gray-100" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
+            </>
+          ))
+          .with({ status: "error" }, () => (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <p className="font-medium text-gray-500 text-sm">載入失敗</p>
+              <p className="mt-1 text-gray-400 text-xs">請重新整理頁面</p>
             </div>
-
-            <div className="flex gap-3">
-              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-100 shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=150&q=80"
-                  alt="智利厚切鮭魚排"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flex flex-1 flex-col">
-                <h4 className="line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
-                  智利厚切鮭魚排 家庭號
-                </h4>
-                <p className="mt-1 text-[11px] text-gray-500">規格: 500g</p>
-                <div className="mt-auto flex items-end justify-between">
-                  <span className="font-bold text-red-500 text-sm">
-                    NT$ 520
-                  </span>
-                  <span className="font-medium text-gray-500 text-xs">x 1</span>
+          ))
+          .with(
+            { status: "success", order: P.not(P.nullish) },
+            ({ order: o }) => (
+              <>
+                <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                  <div className="relative z-10 mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-salmon-200 bg-salmon-100 text-salmon-500 shadow-sm">
+                    <FontAwesomeIcon icon={faBoxOpen} className="text-2xl" />
+                  </div>
+                  <h2 className="relative z-10 mb-1 font-bold text-gray-800 text-xl">
+                    {statusDisplay.title}
+                  </h2>
+                  <p className="relative z-10 text-gray-500 text-sm">
+                    {statusDisplay.desc}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="rounded-b-xl border-gray-100 border-t bg-gray-50/50 p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-gray-500 text-sm">商品小計</span>
-              <span className="font-medium text-gray-800 text-sm">
-                NT$ 1,330
-              </span>
-            </div>
+                <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                  <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
+                    <FontAwesomeIcon
+                      icon={faShoppingBag}
+                      className="mr-2 text-salmon-500"
+                    />
+                    <h3 className="font-bold text-gray-700 text-sm">商品明細</h3>
+                  </div>
+                  <div className="flex flex-col gap-4 p-4">
+                    {o.items.map((item) => (
+                      <div key={item.product_id} className="flex gap-3">
+                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-100 shadow-sm">
+                          {item.product_img_url ? (
+                            <img
+                              src={item.product_img_url}
+                              alt={item.product_name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="h-full w-full bg-gray-100" />
+                          )}
+                        </div>
+                        <div className="flex flex-1 flex-col">
+                          <h4 className="line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
+                            {item.product_name}
+                          </h4>
+                          <p className="mt-1 text-[11px] text-gray-500">
+                            {item.product_desc}
+                          </p>
+                          <div className="mt-auto flex items-end justify-between">
+                            <span className="font-bold text-red-500 text-sm">
+                              NT$ {item.price.toLocaleString()}
+                            </span>
+                            <span className="font-medium text-gray-500 text-xs">
+                              x {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-b-xl border-gray-100 border-t bg-gray-50/50 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-gray-500 text-sm">商品小計</span>
+                      <span className="font-medium text-gray-800 text-sm">
+                        NT$ {o.amount.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="my-2 h-px w-full bg-gray-200" />
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="font-bold text-gray-800 text-sm">
+                        結帳總額
+                      </span>
+                      <span className="font-bold text-lg text-red-500">
+                        NT$ {(o.final_amount || o.amount).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="my-2 h-px w-full bg-gray-200"></div>
+                <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                  <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
+                    <FontAwesomeIcon
+                      icon={faFileInvoice}
+                      className="mr-2 text-gray-400"
+                    />
+                    <h3 className="font-bold text-gray-700 text-sm">訂單資訊</h3>
+                  </div>
+                  <div className="space-y-3 p-4">
+                    <div className="flex items-start justify-between">
+                      <span className="w-20 shrink-0 font-medium text-gray-500 text-xs">
+                        訂單編號
+                      </span>
+                      <div className="flex items-center gap-2 font-medium text-gray-800 text-sm">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigator.clipboard.writeText(o.number)
+                          }
+                          className="flex h-6 w-6 items-center justify-center rounded-md bg-salmon-50 text-salmon-500 transition-colors hover:text-salmon-600 focus:outline-none"
+                        >
+                          <FontAwesomeIcon
+                            icon={faCopy}
+                            className="text-[10px]"
+                          />
+                        </button>
+                        <span>#{o.number}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start justify-between">
+                      <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
+                        訂購時間
+                      </span>
+                      <span className="text-right font-medium text-gray-800 text-sm">
+                        {dayjs(o.order_date).format("YYYY/MM/DD HH:mm")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <span className="font-bold text-gray-800 text-sm">結帳總額</span>
-              <span className="font-bold text-lg text-red-500">NT$ 1,330</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
-            <FontAwesomeIcon
-              icon={faFileInvoice}
-              className="mr-2 text-gray-400"
-            />
-            <h3 className="font-bold text-gray-700 text-sm">訂單資訊</h3>
-          </div>
-          <div className="space-y-3 p-4">
-            <div className="flex items-start justify-between">
-              <span className="w-20 shrink-0 font-medium text-gray-500 text-xs">
-                訂單編號
-              </span>
-              <div className="flex items-center gap-2 font-medium text-gray-800 text-sm">
-                <button
-                  type="button"
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-salmon-50 text-salmon-500 transition-colors hover:text-salmon-600 focus:outline-none"
-                >
-                  <FontAwesomeIcon icon={faCopy} className="text-[10px]" />
-                </button>
-                <span>#ORD-20260309-001</span>
-              </div>
-            </div>
-            <div className="flex items-start justify-between">
-              <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
-                訂購時間
-              </span>
-              <span className="text-right font-medium text-gray-800 text-sm">
-                2026/03/09 10:30:45
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
-            <FontAwesomeIcon icon={faTruck} className="mr-2 text-gray-400" />
-            <h3 className="font-bold text-gray-700 text-sm">配送資訊</h3>
-          </div>
-          <div className="space-y-3 p-4">
-            <div className="flex items-start justify-between">
-              <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
-                收件人
-              </span>
-              <span className="text-right font-medium text-gray-800 text-sm">
-                饗食天堂
-              </span>
-            </div>
-            <div className="flex items-start justify-between">
-              <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
-                店別
-              </span>
-              <span className="text-right font-medium text-gray-800 text-sm">
-                板橋店
-              </span>
-            </div>
-            <div className="flex items-start justify-between">
-              <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
-                收件地址
-              </span>
-              <span className="text-right font-medium text-gray-800 text-sm leading-relaxed">
-                110 台北市信義區
-                <br />
-                信義路五段7號 (台北101) 89樓
-              </span>
-            </div>
-            <div className="flex items-start justify-between">
-              <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
-                訂單備註
-              </span>
-              <span className="text-right font-medium text-gray-800 text-sm">
-                請於下午 6 點前送達交給櫃檯，感謝！
-              </span>
-            </div>
-          </div>
-        </div>
+                <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                  <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
+                    <FontAwesomeIcon
+                      icon={faTruck}
+                      className="mr-2 text-gray-400"
+                    />
+                    <h3 className="font-bold text-gray-700 text-sm">配送資訊</h3>
+                  </div>
+                  <div className="space-y-3 p-4">
+                    <div className="flex items-start justify-between">
+                      <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
+                        收件人
+                      </span>
+                      <span className="text-right font-medium text-gray-800 text-sm">
+                        {o.customer.name}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between">
+                      <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
+                        店別
+                      </span>
+                      <span className="text-right font-medium text-gray-800 text-sm">
+                        {o.address.name}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between">
+                      <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
+                        收件地址
+                      </span>
+                      <span className="text-right font-medium text-gray-800 text-sm leading-relaxed">
+                        {o.address.address}
+                      </span>
+                    </div>
+                    {o.remark && (
+                      <div className="flex items-start justify-between">
+                        <span className="mt-0.5 w-20 shrink-0 font-medium text-gray-500 text-xs">
+                          訂單備註
+                        </span>
+                        <span className="text-right font-medium text-gray-800 text-sm">
+                          {o.remark}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            ),
+          )
+          .otherwise(() => null)}
       </main>
 
       <div className="fixed bottom-0 left-0 z-40 flex w-full gap-2.5 border-gray-200 border-t bg-white/95 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] backdrop-blur-sm">
@@ -204,7 +317,6 @@ export default function Page() {
         >
           取消訂單
         </button>
-
         <a
           href="./create"
           className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-salmon-500 py-2.5 text-center font-bold text-sm text-white shadow-sm transition-colors hover:bg-salmon-600 active:scale-95"
@@ -257,11 +369,9 @@ export default function Page() {
                 <FontAwesomeIcon icon={faXmark} />
               </button>
             </div>
-
             <div className="bg-gray-50/80 px-5 py-4 text-gray-500 text-xs leading-5">
               若仍需保留內容，請先返回檢查後再決定是否取消。
             </div>
-
             <div className="grid grid-cols-2 gap-3 p-4">
               <button
                 type="button"

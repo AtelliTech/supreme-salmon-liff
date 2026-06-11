@@ -58,7 +58,7 @@ export const api = {
     searchParams = {},
     requestOptions = {},
   ) {
-    return client.get(`liff/${lineUserId}/orders/${number}`, {
+    return client.get(`api/liff/${lineUserId}/orders/${number}`, {
       searchParams,
       ...requestOptions,
     });
