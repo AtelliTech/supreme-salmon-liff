@@ -1,5 +1,6 @@
 "use client";
 
+import NiceModal from "@ebay/nice-modal-react";
 import {
   faChevronLeft,
   faCircleExclamation,
@@ -21,6 +22,7 @@ import { useCart } from "@/hooks/use-cart";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 import type { OrderDetailResponse } from "../_components/types";
+import { AddProductDrawer } from "./_components/add-product-drawer";
 
 type CheckUserResponse = {
   status: string;
@@ -167,7 +169,7 @@ export default function Page({
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </a>
-        <h1 className="font-bold text-gray-800 text-lg">建立訂單</h1>
+        <h1 className="font-bold text-gray-800 text-lg">編輯訂單</h1>
         <div className="w-8" />
       </header>
 
@@ -184,6 +186,18 @@ export default function Page({
                 商品清單 ({totalCount})
               </h3>
             </div>
+            {userId && selectedCustomer && (
+              <button
+                type="button"
+                onClick={() =>
+                  NiceModal.show(AddProductDrawer, { userId, selectedCustomer })
+                }
+                className="flex items-center gap-1 rounded-lg bg-salmon-50 px-2.5 py-1.5 font-medium text-salmon-600 text-xs transition-colors hover:bg-salmon-100"
+              >
+                <FontAwesomeIcon icon={faPlus} className="text-[10px]" />
+                新增商品
+              </button>
+            )}
           </div>
 
           <div className="space-y-4 p-4">
