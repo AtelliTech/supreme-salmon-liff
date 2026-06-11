@@ -12,8 +12,6 @@ library.add(fas, far, fab);
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { liff } = useLIFF();
 
-  console.log("AppLayout rendered with LIFF:", liff);
-
   useEffect(() => {
     if (liff && !liff.isLoggedIn()) {
       liff.login();
