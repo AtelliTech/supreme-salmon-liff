@@ -12,8 +12,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <NiceModal.Provider>
-      <ReactQueryProvider>{children}</ReactQueryProvider>
-    </NiceModal.Provider>
+    <ReactQueryProvider>
+      <NiceModal.Provider>{children}</NiceModal.Provider>
+    </ReactQueryProvider>
   );
 }
