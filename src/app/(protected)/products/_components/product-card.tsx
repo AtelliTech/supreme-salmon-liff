@@ -10,14 +10,15 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="relative pb-[100%]">
-        {product.img_url ? <img
-          src={product.img_url || "/placeholder.jpg"}
-          alt={product.name}
-          className="absolute top-0 left-0 h-full w-full object-contain"
-        /> : (
+        {product.img_url ? (
+          <img
+            src={product.img_url || "/placeholder.jpg"}
+            alt={product.name}
+            className="absolute top-0 left-0 h-full w-full object-contain"
+          />
+        ) : (
           <div className="absolute top-0 left-0 h-full w-full animate-pulse bg-gray-100" />
         )}
-        
       </div>
       <div className="flex flex-1 flex-col p-2.5">
         <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">

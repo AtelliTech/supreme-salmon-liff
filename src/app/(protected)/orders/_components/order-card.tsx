@@ -179,13 +179,15 @@ export function OrderCard({ order }: { order: Order }) {
                 key={`${order.id}-img-${idx}`}
                 className={`h-12 w-12 overflow-hidden rounded-full border-2 border-white shadow-sm ${idx === 0 ? "z-20 bg-white" : "z-10 bg-gray-100"}`}
               >
-                {img ? (<img
-                  src={img}
-                  alt={order.title}
-                  width={48}
-                  height={48}
-                  className="h-full w-full object-contain"
-                />) : (
+                {img ? (
+                  <img
+                    src={img}
+                    alt={order.title}
+                    width={48}
+                    height={48}
+                    className="h-full w-full object-contain"
+                  />
+                ) : (
                   <div className="h-full w-full animate-pulse bg-gray-100" />
                 )}
               </div>
@@ -193,16 +195,18 @@ export function OrderCard({ order }: { order: Order }) {
           </div>
         ) : (
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
-            {order.image ? (<img
-              src={order.image}
-              alt={order.title}
-              width={64}
-              height={64}
-              className={cn(
-                "h-full w-full object-contain",
-                order.grayscale ? "grayscale" : "",
-              )}
-            />) : (
+            {order.image ? (
+              <img
+                src={order.image}
+                alt={order.title}
+                width={64}
+                height={64}
+                className={cn(
+                  "h-full w-full object-contain",
+                  order.grayscale ? "grayscale" : "",
+                )}
+              />
+            ) : (
               <div className="h-full w-full animate-pulse bg-gray-100" />
             )}
           </div>
