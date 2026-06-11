@@ -59,7 +59,7 @@ export const StoreSelectDrawer = NiceModal.create<{ userId: string }>(
     }
 
     return (
-      <Drawer open={modal.visible} onOpenChange={() => {}}>
+      <Drawer open={modal.visible} onOpenChange={() => {}} dismissible={false}>
         <DrawerContent className="max-h-[70vh] rounded-t-3xl pb-safe">
           <DrawerTitle className="border-gray-100 border-b px-4 py-3 font-bold text-base text-gray-800">
             請選擇店家
@@ -84,7 +84,7 @@ export const StoreSelectDrawer = NiceModal.create<{ userId: string }>(
                 <p className="text-gray-500 text-sm">載入失敗，請重試</p>
                 <button
                   type="button"
-                  onClick={() => refetch()}
+                  onClick={refetch}
                   className="rounded-xl bg-salmon-500 px-5 py-2 font-semibold text-sm text-white"
                 >
                   重試
