@@ -42,6 +42,7 @@ export default function Page() {
 
       if (!saved) {
         const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+        if (!customer) return;
         setSelectedCustomer(customer as Customer);
         return;
       }
@@ -52,6 +53,7 @@ export default function Page() {
 
       if (wantsSwitch) {
         const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+        if (!customer) return;
         setSelectedCustomer(customer as Customer);
       } else {
         setSelectedCustomer(saved);
@@ -127,6 +129,7 @@ export default function Page() {
     });
     if (wantsSwitch) {
       const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+      if (!customer) return;
       setSelectedCustomer(customer as Customer);
     }
   }
