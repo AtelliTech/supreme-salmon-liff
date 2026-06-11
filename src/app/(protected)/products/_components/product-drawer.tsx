@@ -24,6 +24,8 @@ export type Product = {
   category: { id: number; name: string };
 };
 
+export type ProductDrawerResult = { product: Product; qty: number };
+
 export type ProductsResponse = {
   status: string;
   code: number;
