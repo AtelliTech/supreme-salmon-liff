@@ -242,7 +242,7 @@ export default function Page({
     <div className="bg-gray-50 pb-48 text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
         <a
-          href="/products"
+          href="/orders"
           className="-left-2 relative flex h-8 w-8 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100"
         >
           <FontAwesomeIcon icon={faChevronLeft} />
