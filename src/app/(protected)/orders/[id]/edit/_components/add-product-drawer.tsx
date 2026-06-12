@@ -19,15 +19,14 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { useCart } from "@/hooks/use-cart";
 import { api } from "@/services/client";
 
 export const AddProductDrawer = NiceModal.create<{
   userId: string;
   selectedCustomer: Record<"customer_id" | "division_id", string>;
-}>(({ userId, selectedCustomer }) => {
+  onAddItem: (product: Product, qty: number) => void;
+}>(({ userId, selectedCustomer, onAddItem }) => {
   const modal = useModal();
-  const { addItem } = useCart();
 
   const { data, status } = useQuery({
     queryKey: [userId, "products", selectedCustomer, "add-product-drawer"],
@@ -46,8 +45,9 @@ export const AddProductDrawer = NiceModal.create<{
     NiceModal.show(ProductDrawer, { product }).then((result) => {
       if (!result) return;
       const { product: selected, qty } = result as ProductDrawerResult;
-      addItem(selected, qty);
+      onAddItem(selected, qty);
       NiceModal.hide(ProductDrawer);
+      modal.hide();
     });
   }
 
