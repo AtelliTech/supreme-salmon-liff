@@ -61,7 +61,7 @@ export default function Page({
 
   const router = useRouter();
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
-  const [address, _setAddress] = useState("");
+  const [address, setAddress] = useState("");
   const [remark, setRemark] = useState("");
   const [localItems, setLocalItems] = useState<OrderDetailItem[]>([]);
   const [deliverDate, setDeliverDate] = useState("");
@@ -97,6 +97,7 @@ export default function Page({
       setLocalItems(order.items);
       setDeliverDate(order.deliver_date);
       setSelectedAddressId(order.address.id);
+      setAddress(order.address.address);
       setRemark(order.remark);
       setInitialized(true);
     }
@@ -109,7 +110,7 @@ export default function Page({
   }
 
   function updateQty(productId: string, qty: number) {
-    if (qty <= 0) {
+    if (!Number.isFinite(qty) || qty <= 0) {
       removeItem(productId);
       return;
     }
@@ -134,7 +135,12 @@ export default function Page({
       if (existing) {
         return prev.map((i) =>
           i.product_id === product.id
-            ? { ...i, quantity: i.quantity + qty }
+            ? {
+                ...i,
+                quantity: i.quantity + qty,
+                sub_total: i.price * (i.quantity + qty),
+                final_total: i.deal_price * (i.quantity + qty),
+              }
             : i,
         );
       }
@@ -173,7 +179,13 @@ export default function Page({
   });
 
   function handleSubmit() {
-    if (!userId || localItems.length === 0) return;
+    if (
+      !userId ||
+      localItems.length === 0 ||
+      !deliverDate ||
+      !selectedAddressId
+    )
+      return;
     const payload: UpdateOrderPayload = {
       deliver_date: deliverDate,
       address_id: selectedAddressId,
