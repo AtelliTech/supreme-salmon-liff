@@ -27,6 +27,16 @@ import type {
 } from "../_components/types";
 import { AddProductDrawer } from "./_components/add-product-drawer";
 
+type Address = {
+  id: string;
+  address: string;
+  name: string;
+};
+
+type GetUserAddressesResponse = {
+  data: Address[];
+};
+
 type UpdateOrderPayload = {
   deliver_date: string;
   address_id: string;
@@ -61,7 +71,6 @@ export default function Page({
 
   const router = useRouter();
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
-  const [address, setAddress] = useState("");
   const [remark, setRemark] = useState("");
   const [localItems, setLocalItems] = useState<OrderDetailItem[]>([]);
   const [deliverDate, setDeliverDate] = useState("");
@@ -92,12 +101,27 @@ export default function Page({
 
   const order = orderRes?.data;
 
+  const { data: addressesData } = useQuery({
+    queryKey: [userId, "addresses", order?.customer?.id, order?.division?.id],
+    queryFn: () =>
+      api
+        .getUserAddresses(userId as string, {
+          customer_id: order?.customer?.id as string,
+          division_id: order?.division?.id as string,
+        })
+        .json<GetUserAddressesResponse>(),
+    enabled: !!userId && !!order,
+  });
+
+  const addresses = addressesData?.data ?? [];
+  const selectedAddressDetail =
+    addresses.find((a) => a.id === selectedAddressId)?.address ?? "";
+
   useEffect(() => {
     if (order && !initialized) {
       setLocalItems(order.items);
       setDeliverDate(order.deliver_date);
       setSelectedAddressId(order.address.id);
-      setAddress(order.address.address);
       setRemark(order.remark);
       setInitialized(true);
     }
@@ -378,6 +402,11 @@ export default function Page({
                 className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               >
                 <option value="">選擇地址</option>
+                {addresses.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -391,7 +420,7 @@ export default function Page({
               <input
                 id="address-detail"
                 type="text"
-                value={address}
+                value={selectedAddressDetail}
                 readOnly
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:outline-none"
                 placeholder="選擇地址後自動帶入"
