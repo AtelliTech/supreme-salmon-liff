@@ -21,19 +21,6 @@ import { useCart } from "@/hooks/use-cart";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 
-type CheckUserResponse = {
-  status: string;
-  code: number;
-  data: {
-    customers: Array<{
-      customer_id: string;
-      customer_name: string;
-      division_id: string;
-      division_name: string;
-    }>;
-  };
-};
-
 type Address = {
   id: string;
   address: string;
@@ -72,6 +59,7 @@ export default function Page() {
   const [selectedAddress, setSelectedAddress] = useState("");
 
   const [remark, setRemark] = useState("");
+  const [deliverDate, setDeliverDate] = useState("");
 
   const [selectedCustomer] = useState(() => {
     if (typeof window === "undefined") return null;
@@ -135,7 +123,7 @@ export default function Page() {
     if (!userId || !selectedCustomer || items.length === 0) return;
 
     const payload: CreateOrderPayload = {
-      deliver_date: "2026-06-13",
+      deliver_date: deliverDate,
       address_id: selectedAddress,
       customer_id: String(selectedCustomer.customer_id),
       division_id: String(selectedCustomer.division_id),
@@ -283,6 +271,22 @@ export default function Page() {
           </div>
 
           <div className="space-y-4 p-4">
+            <div>
+              <label
+                htmlFor="deliver-date"
+                className="mb-1 block font-medium text-gray-600 text-xs"
+              >
+                配送日期 <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="deliver-date"
+                type="date"
+                value={deliverDate}
+                onChange={(e) => setDeliverDate(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+              />
+            </div>
+
             <div>
               <label
                 htmlFor="address"

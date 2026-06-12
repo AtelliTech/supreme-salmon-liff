@@ -103,7 +103,7 @@ export default function Page({
           取消訂單
         </button>
         <a
-          href="./create"
+          href={`/orders/${orderNumber}/edit`}
           className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-salmon-500 py-2.5 text-center font-bold text-sm text-white shadow-sm transition-colors hover:bg-salmon-600 active:scale-95"
         >
           <FontAwesomeIcon icon={faEdit} /> 修改訂單
