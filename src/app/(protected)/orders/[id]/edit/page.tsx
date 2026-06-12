@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import numeral from "numeral";
-import { use, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { Product } from "@/app/(protected)/products/_components/product-drawer";
@@ -115,12 +115,20 @@ export default function Page({
     }
     setLocalItems((prev) =>
       prev.map((i) =>
-        i.product_id === productId ? { ...i, quantity: qty } : i,
+        i.product_id === productId
+          ? {
+              ...i,
+              quantity: qty,
+              final_quantity: qty,
+              sub_total: i.price * qty,
+              final_total: i.deal_price * qty,
+            }
+          : i,
       ),
     );
   }
 
-  function onAddItem(product: Product, qty: number) {
+  const onAddItem = useCallback((product: Product, qty: number) => {
     setLocalItems((prev) => {
       const existing = prev.find((i) => i.product_id === product.id);
       if (existing) {
@@ -151,7 +159,7 @@ export default function Page({
         },
       ];
     });
-  }
+  }, []);
 
   const mutation = useMutation({
     mutationFn: (payload: UpdateOrderPayload) =>
