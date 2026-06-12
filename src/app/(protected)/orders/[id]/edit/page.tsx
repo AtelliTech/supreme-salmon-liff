@@ -15,12 +15,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import numeral from "numeral";
-import { use, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import type { Product } from "@/app/(protected)/products/_components/product-drawer";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
-import type { OrderDetailResponse } from "../_components/types";
+import type {
+  OrderDetailItem,
+  OrderDetailResponse,
+} from "../_components/types";
 import { AddProductDrawer } from "./_components/add-product-drawer";
 
 type UpdateOrderPayload = {
@@ -40,6 +44,8 @@ type UpdateOrderPayload = {
     price: string;
     weight: string;
     sub_total: string;
+    final_quantity: string;
+    final_weight: string;
     final_total: string;
     remark: string;
   }>;
@@ -55,9 +61,12 @@ export default function Page({
 
   const router = useRouter();
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
-  const [selectedAddress, setSelectedAddress] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, _setAddress] = useState("");
   const [remark, setRemark] = useState("");
+  const [localItems, setLocalItems] = useState<OrderDetailItem[]>([]);
+  const [deliverDate, setDeliverDate] = useState("");
+  const [selectedAddressId, setSelectedAddressId] = useState("");
+  const [initialized, setInitialized] = useState(false);
 
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
@@ -83,31 +92,87 @@ export default function Page({
 
   const order = orderRes?.data;
 
-  const items = order?.items ?? [];
-  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  useEffect(() => {
+    if (order && !initialized) {
+      setLocalItems(order.items);
+      setDeliverDate(order.deliver_date);
+      setSelectedAddressId(order.address.id);
+      setRemark(order.remark);
+      setInitialized(true);
+    }
+  }, [order, initialized]);
 
-  console.log("order", order);
+  const totalCount = localItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  function removeItem(productId: string) {
+    setLocalItems((prev) => prev.filter((i) => i.product_id !== productId));
+  }
+
+  function updateQty(productId: string, qty: number) {
+    if (qty <= 0) {
+      removeItem(productId);
+      return;
+    }
+    setLocalItems((prev) =>
+      prev.map((i) =>
+        i.product_id === productId ? { ...i, quantity: qty } : i,
+      ),
+    );
+  }
+
+  function onAddItem(product: Product, qty: number) {
+    setLocalItems((prev) => {
+      const existing = prev.find((i) => i.product_id === product.id);
+      if (existing) {
+        return prev.map((i) =>
+          i.product_id === product.id
+            ? { ...i, quantity: i.quantity + qty }
+            : i,
+        );
+      }
+      return [
+        ...prev,
+        {
+          product_id: product.id,
+          product_img_url: product.img_url,
+          product_name: product.name,
+          product_desc: product.description,
+          unit: "",
+          quantity: qty,
+          weight: 0,
+          box_net_weight: product.box_net_weight,
+          price: product.unit_price,
+          deal_price: product.unit_price,
+          sub_total: product.unit_price * qty,
+          final_quantity: qty,
+          final_weight: 0,
+          final_total: product.unit_price * qty,
+          remark: product.remark,
+        },
+      ];
+    });
+  }
 
   const mutation = useMutation({
     mutationFn: (payload: UpdateOrderPayload) =>
-      api.createOrder(userId as string, payload).json(),
+      api.updateOrder(userId as string, orderNumber as string, payload).json(),
     onSuccess: () => {
       router.replace("/orders");
     },
     onError: () => {
-      toast.error("送出訂單失敗，請稍後再試");
+      toast.error("更新訂單失敗，請稍後再試");
     },
   });
 
   function handleSubmit() {
-    if (!userId || items.length === 0) return;
+    if (!userId || localItems.length === 0) return;
     const payload: UpdateOrderPayload = {
-      deliver_date: "",
-      address_id: "",
-      customer_id: "",
-      division_id: "",
+      deliver_date: deliverDate,
+      address_id: selectedAddressId,
+      customer_id: order?.customer?.id ?? "",
+      division_id: order?.division?.id ?? "",
       remark,
-      items: items.map((item) => ({
+      items: localItems.map((item) => ({
         product_id: item.product_id,
         product_img_url: item.product_img_url,
         product_name: item.product_name,
@@ -156,10 +221,16 @@ export default function Page({
             </div>
             <button
               type="button"
-              onClick={() => NiceModal.show(AddProductDrawer, { userId, selectedCustomer: {
-                  customer_id: order?.customer?.id || "",
-                  division_id: order?.division?.id || "",
-              } })}
+              onClick={() =>
+                NiceModal.show(AddProductDrawer, {
+                  userId: userId ?? "",
+                  selectedCustomer: {
+                    customer_id: order?.customer?.id ?? "",
+                    division_id: order?.division?.id ?? "",
+                  },
+                  onAddItem,
+                })
+              }
               className="flex items-center gap-1 rounded-lg bg-salmon-50 px-2.5 py-1.5 font-medium text-salmon-600 text-xs transition-colors hover:bg-salmon-100"
             >
               <FontAwesomeIcon icon={faPlus} className="text-[10px]" />
@@ -168,13 +239,13 @@ export default function Page({
           </div>
 
           <div className="space-y-4 p-4">
-            {items.length === 0 ? (
+            {localItems.length === 0 ? (
               <div className="rounded-xl border border-gray-200 border-dashed bg-gray-50/80 py-8 text-center">
                 <p className="text-gray-500 text-sm">目前尚未加入商品</p>
                 <p className="mt-1 text-gray-400 text-xs">請返回商品頁面選購</p>
               </div>
             ) : (
-              items.map((item) => (
+              localItems.map((item) => (
                 <div key={item.product_id} className="flex gap-3">
                   <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
                     <img
@@ -191,7 +262,7 @@ export default function Page({
                       </h4>
                       <button
                         type="button"
-                        onClick={() => {}}
+                        onClick={() => removeItem(item.product_id)}
                         className="shrink-0 rounded-md bg-red-50 px-2 py-1 text-[11px] text-red-500"
                         aria-label={`刪除 ${item.product_name}`}
                       >
@@ -211,7 +282,9 @@ export default function Page({
                       <div className="inline-flex overflow-hidden rounded-xl border border-gray-200">
                         <button
                           type="button"
-                          onClick={() => {}}
+                          onClick={() =>
+                            updateQty(item.product_id, item.quantity - 1)
+                          }
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="減少數量"
                         >
@@ -223,13 +296,17 @@ export default function Page({
                           step="1"
                           inputMode="numeric"
                           value={item.quantity}
-                          onChange={(e) => {}}
+                          onChange={(e) =>
+                            updateQty(item.product_id, Number(e.target.value))
+                          }
                           className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
                           aria-label="輸入數量"
                         />
                         <button
                           type="button"
-                          onClick={() => {}}
+                          onClick={() =>
+                            updateQty(item.product_id, item.quantity + 1)
+                          }
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="增加數量"
                         >
@@ -262,8 +339,8 @@ export default function Page({
               <input
                 id="deliver-date"
                 type="date"
-                // value={deliverDate}
-                // onChange={(e) => setDeliverDate(e.target.value)}
+                value={deliverDate}
+                onChange={(e) => setDeliverDate(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               />
             </div>
@@ -276,8 +353,8 @@ export default function Page({
               </label>
               <select
                 id="store"
-                value={order?.address.id}
-                onChange={(e) => setSelectedAddress(e.target.value)}
+                value={selectedAddressId}
+                onChange={(e) => setSelectedAddressId(e.target.value)}
                 className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               >
                 <option value="">選擇地址</option>
@@ -294,7 +371,7 @@ export default function Page({
               <input
                 id="address-detail"
                 type="text"
-                // value={selectedAddressDetail}
+                value={address}
                 readOnly
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:outline-none"
                 placeholder="選擇地址後自動帶入"
@@ -325,7 +402,7 @@ export default function Page({
         <div className="p-3">
           <button
             type="button"
-            disabled={items.length === 0 || mutation.isPending}
+            disabled={localItems.length === 0 || mutation.isPending}
             onClick={() => confirmDialogRef.current?.showModal()}
             aria-label="開啟送出訂單確認視窗"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-salmon-500 py-3.5 font-bold text-sm text-white shadow-md transition-all hover:bg-salmon-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 lg:text-base"
