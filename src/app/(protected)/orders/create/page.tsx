@@ -34,6 +34,16 @@ type CheckUserResponse = {
   };
 };
 
+type Address = {
+  id: string;
+  address: string;
+  name: string;
+};
+
+type GetUserAddressesResponse = {
+  data: Address[];
+};
+
 type CreateOrderPayload = {
   deliver_date: string;
   address_id: string;
@@ -60,7 +70,7 @@ export default function Page() {
   const router = useRouter();
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [address, setAddress] = useState("");
+
   const [remark, setRemark] = useState("");
 
   const [selectedCustomer] = useState(() => {
@@ -80,12 +90,26 @@ export default function Page() {
 
   const { items, updateQty, removeItem, clearCart, totalCount } = useCart();
 
-  const { data: checkData } = useQuery({
-    queryKey: ["/api/user_check", userId],
-    queryFn: () => api.checkUser(userId as string).json<CheckUserResponse>(),
-    enabled: !!userId,
+  const { data: addressesData } = useQuery({
+    queryKey: [
+      "/api/user_addresses",
+      userId,
+      selectedCustomer?.customer_id,
+      selectedCustomer?.division_id,
+    ],
+    queryFn: () =>
+      api
+        .getUserAddresses(userId as string, {
+          customer_id: selectedCustomer?.customer_id as string,
+          division_id: selectedCustomer?.division_id as string,
+        })
+        .json<GetUserAddressesResponse>(),
+    enabled: !!userId && !!selectedCustomer,
   });
-  const customers = checkData?.data?.customers ?? [];
+
+  const addresses = addressesData?.data ?? [];
+  const selectedAddressDetail =
+    addresses.find((a) => a.id === selectedAddress)?.address ?? "";
 
   useEffect(() => {
     if (!selectedCustomer) {
@@ -109,11 +133,12 @@ export default function Page() {
 
   function handleSubmit() {
     if (!userId || !selectedCustomer || items.length === 0) return;
+
     const payload: CreateOrderPayload = {
-      deliver_date: "",
-      address_id: "",
-      customer_id: selectedCustomer.customer_id,
-      division_id: selectedCustomer.division_id,
+      deliver_date: "2026-06-13",
+      address_id: selectedAddress,
+      customer_id: String(selectedCustomer.customer_id),
+      division_id: String(selectedCustomer.division_id),
       remark,
       items: items.map((item) => ({
         product_id: item.product_id,
@@ -121,15 +146,17 @@ export default function Page() {
         product_name: item.product_name,
         product_desc: item.product_desc,
         box_net_weight: String(item.box_net_weight),
-        unit: "",
+        unit: "1",
         quantity: String(item.qty),
         price: String(item.unit_price),
-        weight: "",
+        weight: "1",
         sub_total: String(item.unit_price * item.qty),
         final_total: String(item.unit_price * item.qty),
         remark: item.remark,
       })),
     };
+    console.log(payload);
+
     mutation.mutate(payload);
     confirmDialogRef.current?.close();
   }
@@ -258,24 +285,27 @@ export default function Page() {
           <div className="space-y-4 p-4">
             <div>
               <label
-                htmlFor="store"
+                htmlFor="address"
                 className="mb-1 block font-medium text-gray-600 text-xs"
               >
                 選擇地址 <span className="text-red-500">*</span>
               </label>
               <select
-                id="store"
+                id="address"
                 value={selectedAddress}
                 onChange={(e) => setSelectedAddress(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 pr-8 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundSize: "1.25rem",
+                }}
               >
-                <option value="">選擇地址</option>
-                {customers.map((c) => (
-                  <option
-                    key={`${c.customer_id}-${c.division_id}`}
-                    value={`${c.customer_id}-${c.division_id}`}
-                  >
-                    {c.customer_name} · {c.division_name}
+                <option value="">選擇地址...</option>
+                {addresses.map((address: Address) => (
+                  <option key={address.id} value={address.id}>
+                    {address.name}
                   </option>
                 ))}
               </select>
@@ -283,18 +313,18 @@ export default function Page() {
 
             <div>
               <label
-                htmlFor="address"
+                htmlFor="address-detail"
                 className="mb-1 block font-medium text-gray-600 text-xs"
               >
-                收件地址
+                地址詳情
               </label>
               <input
-                id="address"
+                id="address-detail"
                 type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:border-salmon-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-salmon-500"
-                placeholder="詳細地址、樓層"
+                value={selectedAddressDetail}
+                readOnly
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:outline-none"
+                placeholder="選擇地址後自動帶入"
               />
             </div>
 

@@ -21,7 +21,10 @@ export const api = {
 
   getUserAddresses(
     lineUserId: string,
-    { customer_id, division_id }: { customer_id: string | number; division_id: string | number },
+    {
+      customer_id,
+      division_id,
+    }: { customer_id: string | number; division_id: string | number },
     requestOptions = {},
   ) {
     return client.get(`api/liff/${lineUserId}/addresses`, {
