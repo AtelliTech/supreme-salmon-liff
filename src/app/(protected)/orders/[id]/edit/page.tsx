@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import numeral from "numeral";
 import { use, useCallback, useEffect, useRef, useState } from "react";
@@ -120,7 +121,7 @@ export default function Page({
   useEffect(() => {
     if (order && !initialized) {
       setLocalItems(order.items);
-      setDeliverDate(order.deliver_date);
+      setDeliverDate(dayjs(order.deliver_date).format("YYYY-MM-DD"));
       setSelectedAddressId(order.address.id);
       setRemark(order.remark);
       setInitialized(true);
@@ -401,7 +402,9 @@ export default function Page({
                 onChange={(e) => setSelectedAddressId(e.target.value)}
                 className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               >
-                <option value="">選擇地址</option>
+                <option value="" disabled>
+                  選擇地址
+                </option>
                 {addresses.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}
