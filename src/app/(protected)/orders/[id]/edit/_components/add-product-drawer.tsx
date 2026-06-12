@@ -11,7 +11,7 @@ import {
   type ProductDrawerResult,
   type ProductsResponse,
 } from "@/app/(protected)/products/_components/product-drawer";
-import type { Customer } from "@/app/(protected)/products/_components/store-select-drawer";
+
 import {
   Drawer,
   DrawerClose,
@@ -24,7 +24,7 @@ import { api } from "@/services/client";
 
 export const AddProductDrawer = NiceModal.create<{
   userId: string;
-  selectedCustomer: Customer;
+  selectedCustomer: Record<"customer_id" | "division_id", string>;
 }>(({ userId, selectedCustomer }) => {
   const modal = useModal();
   const { addItem } = useCart();

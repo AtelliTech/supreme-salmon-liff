@@ -15,29 +15,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import numeral from "numeral";
-import { use, useEffect, useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import { toast } from "sonner";
-import { loadCustomer } from "@/app/(protected)/products/_components/store-select-drawer";
-import { useCart } from "@/hooks/use-cart";
+
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 import type { OrderDetailResponse } from "../_components/types";
 import { AddProductDrawer } from "./_components/add-product-drawer";
 
-type CheckUserResponse = {
-  status: string;
-  code: number;
-  data: {
-    customers: Array<{
-      customer_id: string;
-      customer_name: string;
-      division_id: string;
-      division_name: string;
-    }>;
-  };
-};
-
-type CreateOrderPayload = {
+type UpdateOrderPayload = {
   deliver_date: string;
   address_id: string;
   customer_id: string;
@@ -73,11 +59,6 @@ export default function Page({
   const [address, setAddress] = useState("");
   const [remark, setRemark] = useState("");
 
-  const [selectedCustomer] = useState(() => {
-    if (typeof window === "undefined") return null;
-    return loadCustomer();
-  });
-
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
     queryKey: ["liff.profile"],
@@ -88,7 +69,7 @@ export default function Page({
   });
   const userId = profile?.userId;
 
-  const { data: orderRes, status } = useQuery({
+  const { data: orderRes } = useQuery({
     queryKey: [userId, "orders", orderNumber],
     queryFn: () => {
       if (!userId || !orderNumber)
@@ -102,28 +83,15 @@ export default function Page({
 
   const order = orderRes?.data;
 
+  const items = order?.items ?? [];
+  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
   console.log("order", order);
 
-  const { items, updateQty, removeItem, clearCart, totalCount } = useCart();
-
-  const { data: checkData } = useQuery({
-    queryKey: ["/api/user_check", userId],
-    queryFn: () => api.checkUser(userId as string).json<CheckUserResponse>(),
-    enabled: !!userId,
-  });
-  const customers = checkData?.data?.customers ?? [];
-
-  useEffect(() => {
-    if (!selectedCustomer) {
-      router.replace("/products");
-    }
-  }, [selectedCustomer, router]);
-
   const mutation = useMutation({
-    mutationFn: (payload: CreateOrderPayload) =>
+    mutationFn: (payload: UpdateOrderPayload) =>
       api.createOrder(userId as string, payload).json(),
     onSuccess: () => {
-      clearCart();
       router.replace("/orders");
     },
     onError: () => {
@@ -131,15 +99,13 @@ export default function Page({
     },
   });
 
-  if (!selectedCustomer) return null;
-
   function handleSubmit() {
-    if (!userId || !selectedCustomer || items.length === 0) return;
-    const payload: CreateOrderPayload = {
+    if (!userId || items.length === 0) return;
+    const payload: UpdateOrderPayload = {
       deliver_date: "",
       address_id: "",
-      customer_id: selectedCustomer.customer_id,
-      division_id: selectedCustomer.division_id,
+      customer_id: "",
+      division_id: "",
       remark,
       items: items.map((item) => ({
         product_id: item.product_id,
@@ -147,12 +113,14 @@ export default function Page({
         product_name: item.product_name,
         product_desc: item.product_desc,
         box_net_weight: String(item.box_net_weight),
-        unit: "",
-        quantity: String(item.qty),
-        price: String(item.unit_price),
-        weight: "",
-        sub_total: String(item.unit_price * item.qty),
-        final_total: String(item.unit_price * item.qty),
+        unit: item.unit,
+        quantity: String(item.quantity),
+        price: String(item.price),
+        weight: String(item.weight),
+        sub_total: String(item.sub_total),
+        final_quantity: String(item.final_quantity),
+        final_weight: String(item.final_weight),
+        final_total: String(item.final_total),
         remark: item.remark,
       })),
     };
@@ -186,18 +154,17 @@ export default function Page({
                 商品清單 ({totalCount})
               </h3>
             </div>
-            {userId && selectedCustomer && (
-              <button
-                type="button"
-                onClick={() =>
-                  NiceModal.show(AddProductDrawer, { userId, selectedCustomer })
-                }
-                className="flex items-center gap-1 rounded-lg bg-salmon-50 px-2.5 py-1.5 font-medium text-salmon-600 text-xs transition-colors hover:bg-salmon-100"
-              >
-                <FontAwesomeIcon icon={faPlus} className="text-[10px]" />
-                新增商品
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => NiceModal.show(AddProductDrawer, { userId, selectedCustomer: {
+                  customer_id: order?.customer?.id || "",
+                  division_id: order?.division?.id || "",
+              } })}
+              className="flex items-center gap-1 rounded-lg bg-salmon-50 px-2.5 py-1.5 font-medium text-salmon-600 text-xs transition-colors hover:bg-salmon-100"
+            >
+              <FontAwesomeIcon icon={faPlus} className="text-[10px]" />
+              新增商品
+            </button>
           </div>
 
           <div className="space-y-4 p-4">
@@ -224,7 +191,7 @@ export default function Page({
                       </h4>
                       <button
                         type="button"
-                        onClick={() => removeItem(item.product_id)}
+                        onClick={() => {}}
                         className="shrink-0 rounded-md bg-red-50 px-2 py-1 text-[11px] text-red-500"
                         aria-label={`刪除 ${item.product_name}`}
                       >
@@ -238,15 +205,13 @@ export default function Page({
 
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <span className="font-bold text-salmon-600 text-sm">
-                        NT$ {numeral(item.unit_price).format("0,0")}
+                        NT$ {numeral(item.price).format("0,0")}
                       </span>
 
                       <div className="inline-flex overflow-hidden rounded-xl border border-gray-200">
                         <button
                           type="button"
-                          onClick={() =>
-                            updateQty(item.product_id, item.qty - 1)
-                          }
+                          onClick={() => {}}
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="減少數量"
                         >
@@ -257,21 +222,14 @@ export default function Page({
                           min="0"
                           step="1"
                           inputMode="numeric"
-                          value={item.qty}
-                          onChange={(e) =>
-                            updateQty(
-                              item.product_id,
-                              Math.max(0, Math.floor(Number(e.target.value))),
-                            )
-                          }
+                          value={item.quantity}
+                          onChange={(e) => {}}
                           className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
                           aria-label="輸入數量"
                         />
                         <button
                           type="button"
-                          onClick={() =>
-                            updateQty(item.product_id, item.qty + 1)
-                          }
+                          onClick={() => {}}
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="增加數量"
                         >
@@ -296,6 +254,21 @@ export default function Page({
           <div className="space-y-4 p-4">
             <div>
               <label
+                htmlFor="deliver-date"
+                className="mb-1 block font-medium text-gray-600 text-xs"
+              >
+                配送日期 <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="deliver-date"
+                type="date"
+                // value={deliverDate}
+                // onChange={(e) => setDeliverDate(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
                 htmlFor="store"
                 className="mb-1 block font-medium text-gray-600 text-xs"
               >
@@ -303,36 +276,28 @@ export default function Page({
               </label>
               <select
                 id="store"
-                value={selectedAddress}
+                value={order?.address.id}
                 onChange={(e) => setSelectedAddress(e.target.value)}
                 className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               >
                 <option value="">選擇地址</option>
-                {customers.map((c) => (
-                  <option
-                    key={`${c.customer_id}-${c.division_id}`}
-                    value={`${c.customer_id}-${c.division_id}`}
-                  >
-                    {c.customer_name} · {c.division_name}
-                  </option>
-                ))}
               </select>
             </div>
 
             <div>
               <label
-                htmlFor="address"
+                htmlFor="address-detail"
                 className="mb-1 block font-medium text-gray-600 text-xs"
               >
-                收件地址
+                地址詳情
               </label>
               <input
-                id="address"
+                id="address-detail"
                 type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:border-salmon-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-salmon-500"
-                placeholder="詳細地址、樓層"
+                // value={selectedAddressDetail}
+                readOnly
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-shadow focus:outline-none"
+                placeholder="選擇地址後自動帶入"
               />
             </div>
 
