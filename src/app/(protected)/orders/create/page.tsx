@@ -186,12 +186,16 @@ export default function Page() {
             ) : (
               items.map((item) => (
                 <div key={item.product_id} className="flex gap-3">
-                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
-                    <img
-                      src={item.product_img_url}
-                      alt={item.product_name}
-                      className="h-full w-full object-contain"
-                    />
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
+                    {item.product_img_url ? (
+                      <img
+                        src={item.product_img_url}
+                        alt={item.product_name}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                       <div className="absolute top-0 left-0 h-full w-full animate-pulse bg-gray-100" />
+                    )}
                   </div>
 
                   <div className="flex min-w-0 flex-1 flex-col">

@@ -97,7 +97,7 @@ export default function Page() {
         </div>
       </header>
 
-      <div className="bg-gray-100 px-4 py-2">
+      <div className="px-4 pt-2">
         <span className="text-gray-500 text-sm">會員資訊</span>
       </div>
 
