@@ -51,7 +51,7 @@ export default function Page() {
 
   const { data: userCheckRes, status } = useQuery({
     queryKey: ["/api/liff/user_check", userId],
-    queryFn: () => api.checkUser(userId as string).json<UserCheckResponse>(),
+    queryFn: () => api.checkUser(userId!).json<UserCheckResponse>(),
     enabled: !!userId,
   });
 
@@ -61,24 +61,25 @@ export default function Page() {
     loadCustomer,
   );
 
-  async function handleSwitchStore() {
-    if (!userId) return;
-    const customer = await NiceModal.show(StoreSelectDrawer, { userId });
-    if (!customer) return;
-    saveCustomer(customer as Customer);
-    setActiveCustomer(customer as Customer);
-    queryClient.invalidateQueries({ queryKey: [userId, "products"] });
-  }
-
-  function handleSelectCustomer(customer: Customer) {
+  function applyCustomer(customer: Customer) {
     saveCustomer(customer);
     setActiveCustomer(customer);
     queryClient.invalidateQueries({ queryKey: [userId, "products"] });
   }
 
+  async function handleSwitchStore() {
+    if (!userId) return;
+    const customer = await NiceModal.show(StoreSelectDrawer, { userId });
+    if (!customer) return;
+    applyCustomer(customer as Customer);
+  }
+
+  function handleSelectCustomer(customer: Customer) {
+    applyCustomer(customer);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 text-gray-800 antialiased">
-      {/* Header */}
       <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
         <div className="font-bold text-lg text-salmon-600">MOWI Taiwan</div>
         <div className="relative">
@@ -96,7 +97,6 @@ export default function Page() {
         </div>
       </header>
 
-      {/* Section label */}
       <div className="bg-gray-100 px-4 py-2">
         <span className="text-gray-500 text-sm">會員資訊</span>
       </div>
@@ -118,6 +118,12 @@ export default function Page() {
             />
           </>
         )}
+        {status === "error" && (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <p className="font-medium text-gray-500 text-sm">載入失敗</p>
+            <p className="mt-1 text-gray-400 text-xs">請重新整理頁面</p>
+          </div>
+        )}
       </div>
 
       <NavBottom />
@@ -127,7 +133,10 @@ export default function Page() {
 
 function ProfileCard({ user }: { user: UserCheckData }) {
   const initial = user.display_name.charAt(0).toUpperCase();
-  const truncatedUid = user.line_uid.slice(0, 9) + "...";
+  const truncatedUid =
+    user.line_uid.length > 9
+      ? `${user.line_uid.slice(0, 9)}...`
+      : user.line_uid;
 
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
@@ -136,7 +145,7 @@ function ProfileCard({ user }: { user: UserCheckData }) {
           {initial}
         </div>
         <div>
-          <p className="font-bold text-gray-800 text-base">
+          <p className="font-bold text-base text-gray-800">
             {user.display_name}
           </p>
           <p className="text-gray-400 text-xs">
@@ -146,12 +155,12 @@ function ProfileCard({ user }: { user: UserCheckData }) {
       </div>
       <div className="mt-3 flex gap-2">
         {user.is_customer === "Y" && (
-          <span className="rounded-full border border-green-200 bg-green-50 px-3 py-0.5 text-green-600 text-xs font-medium">
+          <span className="rounded-full border border-green-200 bg-green-50 px-3 py-0.5 font-medium text-green-600 text-xs">
             已認證客戶
           </span>
         )}
         {user.display_price === "Y" && (
-          <span className="rounded-full border border-teal-200 bg-teal-50 px-3 py-0.5 text-teal-600 text-xs font-medium">
+          <span className="rounded-full border border-teal-200 bg-teal-50 px-3 py-0.5 font-medium text-teal-600 text-xs">
             可查看價格
           </span>
         )}
