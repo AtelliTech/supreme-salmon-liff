@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { match } from "ts-pattern";
 import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 
 export type OrderStatus =
   | "processing"
@@ -157,6 +158,7 @@ export function mapApiOrder(order: ApiOrder): Order {
 }
 
 export function OrderCard({ order }: { order: Order }) {
+  const { displayPrice } = useUserSettings();
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center justify-between border-gray-100 border-b bg-gray-50/50 px-4 py-3">
@@ -221,7 +223,7 @@ export function OrderCard({ order }: { order: Order }) {
           </p>
           <p className="font-bold text-gray-800 text-sm">
             總計:{" "}
-            <span className="text-red-500">
+            <span className={cn("text-red-500", !displayPrice && "invisible")}>
               NT$ {order.total.toLocaleString()}
             </span>
           </p>
