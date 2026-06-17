@@ -19,9 +19,9 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { api } from "@/services/client";
 import { cn } from "@/lib/utils";
 import { useUserSettings } from "@/providers/user-settings-provider";
+import { api } from "@/services/client";
 
 export const AddProductDrawer = NiceModal.create<{
   userId: string;
@@ -132,7 +132,12 @@ export const AddProductDrawer = NiceModal.create<{
                       <p className="line-clamp-1 text-gray-400 text-xs">
                         {product.description}
                       </p>
-                      <p className={cn("font-bold text-red-500 text-sm", !displayPrice && "invisible")}>
+                      <p
+                        className={cn(
+                          "font-bold text-red-500 text-sm",
+                          !displayPrice && "invisible",
+                        )}
+                      >
                         NT$ {numeral(product.unit_price).format("0,0")}
                       </p>
                     </div>

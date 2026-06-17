@@ -4,9 +4,9 @@ import NiceModal from "@ebay/nice-modal-react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
+import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import { useUserSettings } from "@/providers/user-settings-provider";
-import { useCart } from "@/hooks/use-cart";
 import {
   type Product,
   ProductDrawer,
@@ -49,7 +49,12 @@ export function ProductCard({ product }: { product: Product }) {
           {product.description}
         </p>
         <div className="mt-auto flex items-end justify-between pt-2">
-          <p className={cn("font-bold text-base text-red-500 leading-none", !displayPrice && "invisible")}>
+          <p
+            className={cn(
+              "font-bold text-base text-red-500 leading-none",
+              !displayPrice && "invisible",
+            )}
+          >
             NT$ {numeral(product.unit_price).format("0,0")}
           </p>
           <button

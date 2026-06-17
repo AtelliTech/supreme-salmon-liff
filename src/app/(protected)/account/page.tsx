@@ -145,9 +145,7 @@ function ProfileCard({ user }: { user: UserCheckData }) {
           <p className="font-bold text-base text-gray-800">
             {user.display_name}
           </p>
-          <p className="text-gray-400 text-xs">
-            LINE 帳號已綁定：{lineUid}
-          </p>
+          <p className="text-gray-400 text-xs">LINE 帳號已綁定：{lineUid}</p>
         </div>
       </div>
       <div className="mt-3 flex gap-2">

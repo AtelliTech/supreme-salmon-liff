@@ -18,10 +18,10 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { loadCustomer } from "@/app/(protected)/products/_components/store-select-drawer";
 import { useCart } from "@/hooks/use-cart";
-import { useLIFF } from "@/providers/liff-providers";
-import { api } from "@/services/client";
 import { cn } from "@/lib/utils";
+import { useLIFF } from "@/providers/liff-providers";
 import { useUserSettings } from "@/providers/user-settings-provider";
+import { api } from "@/services/client";
 
 type Address = {
   id: string;
@@ -222,7 +222,12 @@ export default function Page() {
                     </p>
 
                     <div className="mt-2 flex items-center justify-between gap-2">
-                      <span className={cn("font-bold text-salmon-600 text-sm", !displayPrice && "invisible")}>
+                      <span
+                        className={cn(
+                          "font-bold text-salmon-600 text-sm",
+                          !displayPrice && "invisible",
+                        )}
+                      >
                         NT$ {numeral(item.unit_price).format("0,0")}
                       </span>
 

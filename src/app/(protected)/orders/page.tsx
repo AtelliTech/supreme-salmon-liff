@@ -110,11 +110,6 @@ export default function Page() {
               }`}
             >
               {label}
-              {hasBadge && !isActive && (
-                <span className="-right-1 -top-1 absolute flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-bold text-[10px] text-white">
-                  1
-                </span>
-              )}
             </button>
           );
         })}
