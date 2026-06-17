@@ -4,6 +4,8 @@ import NiceModal from "@ebay/nice-modal-react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
+import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 import { useCart } from "@/hooks/use-cart";
 import {
   type Product,
@@ -13,6 +15,7 @@ import {
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { displayPrice } = useUserSettings();
 
   function handleAddToCart() {
     NiceModal.show(ProductDrawer, { product }).then((result) => {
@@ -46,7 +49,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.description}
         </p>
         <div className="mt-auto flex items-end justify-between pt-2">
-          <p className="font-bold text-base text-red-500 leading-none">
+          <p className={cn("font-bold text-base text-red-500 leading-none", !displayPrice && "invisible")}>
             NT$ {numeral(product.unit_price).format("0,0")}
           </p>
           <button
