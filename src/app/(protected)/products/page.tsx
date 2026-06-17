@@ -131,19 +131,6 @@ export default function Page() {
     ))
     .exhaustive();
 
-  // biome-ignore lint/correctness/noUnusedVariables: connected via store switch flow
-  async function handleSwitchStore() {
-    if (!userId || !selectedCustomer) return;
-    const wantsSwitch = await NiceModal.show(SwitchStoreDialog, {
-      customer: selectedCustomer,
-    });
-    if (wantsSwitch) {
-      const customer = await NiceModal.show(StoreSelectDrawer, { userId });
-      if (!customer) return;
-      handleCustomerChange(customer as Customer);
-    }
-  }
-
   return (
     <div className="no-scrollbar bg-gray-50 pb-20 text-gray-800 antialiased">
       <header className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow-sm">
