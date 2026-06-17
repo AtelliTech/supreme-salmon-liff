@@ -172,12 +172,12 @@ export default function Page() {
       )}
 
       <div className="category-container no-scrollbar mb-2 overflow-x-auto whitespace-nowrap bg-white px-3 py-3 shadow-sm">
-        <a
-          href="/#"
+        <button
+          type="button"
           className="category-item mr-2 inline-block rounded-full bg-salmon-500 px-4 py-1.5 font-medium text-sm text-white"
         >
           全部商品
-        </a>
+        </button>
       </div>
 
       <main className="product-container grid grid-cols-2 gap-3 p-3">
