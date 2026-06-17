@@ -24,7 +24,7 @@ export function NavBottom() {
           <FontAwesomeIcon icon={faFileInvoice} className="mb-0.5 text-lg" />
           <span className="font-medium text-[10px]">訂單</span>
         </a>
-        <a href="/profile" className={linkClass("/profile")}>
+        <a href="/account" className={linkClass("/account")}>
           <FontAwesomeIcon icon={faUser} className="mb-0.5 text-lg" />
           <span className="font-medium text-[10px]">會員</span>
         </a>
