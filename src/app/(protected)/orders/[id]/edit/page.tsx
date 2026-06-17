@@ -393,13 +393,15 @@ export default function Page({
               >
                 配送日期 <span className="text-red-500">*</span>
               </label>
-              <input
-                id="deliver-date"
-                type="date"
-                value={deliverDate}
-                onChange={(e) => setDeliverDate(e.target.value)}
-                className="w-full max-w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
-              />
+              <div className="overflow-hidden">
+                <input
+                  id="deliver-date"
+                  type="date"
+                  value={deliverDate}
+                  onChange={(e) => setDeliverDate(e.target.value)}
+                  className="w-full max-w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+                />
+              </div>
             </div>
             <div>
               <label
