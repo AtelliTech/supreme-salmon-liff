@@ -159,6 +159,7 @@ export function mapApiOrder(order: ApiOrder): Order {
 
 export function OrderCard({ order }: { order: Order }) {
   const { displayPrice } = useUserSettings();
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center justify-between border-gray-100 border-b bg-gray-50/50 px-4 py-3">
@@ -182,9 +183,9 @@ export function OrderCard({ order }: { order: Order }) {
           <p className="mb-1 text-gray-500 text-xs">
             共 {order.itemCount} 件商品
           </p>
-          <p className="font-bold text-gray-800 text-sm">
+          <p className={cn("font-bold text-gray-800 text-sm", !displayPrice && "hidden")}>
             總計:{" "}
-            <span className={cn("text-red-500", !displayPrice && "invisible")}>
+            <span className="text-red-500">
               NT$ {order.total.toLocaleString()}
             </span>
           </p>

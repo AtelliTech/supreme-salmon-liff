@@ -62,7 +62,7 @@ export function OrderItemsCard({ items, amount, final_amount }: Props) {
           </div>
         ))}
       </div>
-      <div className="rounded-b-xl border-gray-100 border-t bg-gray-50/50 p-4">
+      <div className={cn("rounded-b-xl border-gray-100 border-t bg-gray-50/50 p-4", !displayPrice && "hidden")}>
         <div className="mb-2 flex items-center justify-between">
           <span className="text-gray-500 text-sm">商品小計</span>
           <span
