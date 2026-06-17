@@ -112,12 +112,15 @@ export const AddProductDrawer = NiceModal.create<{
                     className="flex w-full gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 active:bg-gray-100"
                   >
                     <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
-                      {product.img_url ? (<img
-                        src={product.img_url}
-                        alt={product.name}
-                        className="h-full w-full object-contain"
-                      />): (<div className="absolute top-0 left-0 h-full w-full animate-pulse bg-gray-100" />)}
-                      
+                      {product.img_url ? (
+                        <img
+                          src={product.img_url}
+                          alt={product.name}
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <div className="absolute top-0 left-0 h-full w-full animate-pulse bg-gray-100" />
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="line-clamp-2 font-medium text-gray-800 text-sm">
