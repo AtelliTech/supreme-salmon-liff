@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useLIFF } from "@/providers/liff-providers";
-import { UserSettingsProvider } from "@/providers/user-settings-provider";
+import { useUserSettings } from "@/providers/user-settings-provider";
 import { api } from "@/services/client";
 
 type UserCheckResponse = {
@@ -18,6 +18,7 @@ type UserCheckResponse = {
 export default function Layout({ children }: React.PropsWithChildren) {
   const router = useRouter();
   const { liff } = useLIFF();
+  const { setDisplayPrice } = useUserSettings();
 
   const { data: profile } = useQuery({
     queryKey: ["liff.profile"],
@@ -32,10 +33,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
 
   const { data: userCheck, status } = useQuery({
     queryKey: ["/api/liff/user_check", userId],
-    queryFn: () =>
-      api
-        .checkUser(userId as string)
-        .json<UserCheckResponse>(),
+    queryFn: () => api.checkUser(userId as string).json<UserCheckResponse>(),
     enabled: !!userId,
   });
 
@@ -49,15 +47,15 @@ export default function Layout({ children }: React.PropsWithChildren) {
     }
   }, [isNotCustomer, router]);
 
+  useEffect(() => {
+    if (status === "success" && userCheck?.data?.display_price) {
+      setDisplayPrice(userCheck.data.display_price !== "N");
+    }
+  }, [status, userCheck?.data?.display_price, setDisplayPrice]);
+
   if (status !== "success" || isNotCustomer) {
     return null;
   }
 
-  const displayPrice = userCheck?.data?.display_price !== "N";
-
-  return (
-    <UserSettingsProvider displayPrice={displayPrice}>
-      {children}
-    </UserSettingsProvider>
-  );
+  return children;
 }

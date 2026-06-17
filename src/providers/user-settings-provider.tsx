@@ -1,19 +1,22 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 type UserSettings = {
   displayPrice: boolean;
+  setDisplayPrice: (value: boolean) => void;
 };
 
-const UserSettingsContext = createContext<UserSettings>({ displayPrice: true });
+const UserSettingsContext = createContext<UserSettings>({
+  displayPrice: true,
+  setDisplayPrice: () => {},
+});
 
-export function UserSettingsProvider({
-  children,
-  displayPrice,
-}: React.PropsWithChildren<{ displayPrice: boolean }>) {
+export function UserSettingsProvider({ children }: React.PropsWithChildren) {
+  const [displayPrice, setDisplayPrice] = useState(true);
+
   return (
-    <UserSettingsContext.Provider value={{ displayPrice }}>
+    <UserSettingsContext.Provider value={{ displayPrice, setDisplayPrice }}>
       {children}
     </UserSettingsContext.Provider>
   );
