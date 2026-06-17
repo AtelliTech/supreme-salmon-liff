@@ -30,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="relative pb-[100%]">
         {product.img_url ? (
           <img
-            src={product.img_url || "/placeholder.jpg"}
+            src={product.img_url}
             alt={product.name}
             className="absolute top-0 left-0 h-full w-full object-contain"
           />

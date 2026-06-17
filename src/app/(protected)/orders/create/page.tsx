@@ -188,7 +188,7 @@ export default function Page() {
                 <div key={item.product_id} className="flex gap-3">
                   <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100">
                     <img
-                      src={item.product_img_url || "/placeholder.jpg"}
+                      src={item.product_img_url}
                       alt={item.product_name}
                       className="h-full w-full object-contain"
                     />
