@@ -5,6 +5,8 @@ import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 import {
   Drawer,
   DrawerClose,
@@ -42,6 +44,7 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
   ({ product }) => {
     const modal = useModal();
     const [qty, setQty] = useState(1);
+    const { displayPrice } = useUserSettings();
 
     return (
       <Drawer open={modal.visible} onOpenChange={() => modal.hide()}>
@@ -81,7 +84,7 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                 <p className="mt-1 text-gray-500 text-xs">
                   {product.description}
                 </p>
-                <p className="mt-2 font-bold text-lg text-red-500">
+                <p className={cn("mt-2 font-bold text-lg text-red-500", !displayPrice && "invisible")}>
                   NT$ {numeral(product.unit_price).format("0,0")}
                 </p>
               </div>
