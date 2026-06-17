@@ -398,7 +398,7 @@ export default function Page({
                 type="date"
                 value={deliverDate}
                 onChange={(e) => setDeliverDate(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
+                className="w-full max-w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-700 text-sm focus:border-salmon-500 focus:bg-white focus:outline-none"
               />
             </div>
             <div>
