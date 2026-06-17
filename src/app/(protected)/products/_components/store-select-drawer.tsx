@@ -48,25 +48,6 @@ export const StoreSelectDrawer = NiceModal.create<{ userId: string }>(
     const { data, status, refetch } = useQuery({
       queryKey: ["/api/user_check", userId],
       queryFn: () => api.checkUser(userId).json<UserCheckResponse>(),
-      select: (data) => {
-        // FIXME: temporary mock until backend is ready
-        const mockCustomers = [
-          {
-            customer_id: 208682,
-            customer_name: "測試店家",
-            division_id: 240,
-            division_name: "大安店",
-          },
-          {
-            customer_id: 208683,
-            customer_name: "測試店家 2",
-            division_id: 241,
-            division_name: "信義店",
-          },
-        ];
-
-        return { ...data, data: { ...data.data, customers: mockCustomers } };
-      },
     });
 
     const customers = data?.data?.customers ?? [];
