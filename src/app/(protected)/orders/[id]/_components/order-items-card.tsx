@@ -1,5 +1,9 @@
+"use client";
+
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 import type { OrderDetailItem } from "./types";
 
 type Props = {
@@ -9,6 +13,8 @@ type Props = {
 };
 
 export function OrderItemsCard({ items, amount, final_amount }: Props) {
+  const { displayPrice } = useUserSettings();
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center border-gray-100 border-b bg-gray-50/50 px-4 py-3">
@@ -40,7 +46,12 @@ export function OrderItemsCard({ items, amount, final_amount }: Props) {
                 {item.product_desc}
               </p>
               <div className="mt-auto flex items-end justify-between">
-                <span className="font-bold text-red-500 text-sm">
+                <span
+                  className={cn(
+                    "font-bold text-red-500 text-sm",
+                    !displayPrice && "invisible",
+                  )}
+                >
                   NT$ {item.price.toLocaleString()}
                 </span>
                 <span className="font-medium text-gray-500 text-xs">
@@ -54,14 +65,24 @@ export function OrderItemsCard({ items, amount, final_amount }: Props) {
       <div className="rounded-b-xl border-gray-100 border-t bg-gray-50/50 p-4">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-gray-500 text-sm">商品小計</span>
-          <span className="font-medium text-gray-800 text-sm">
+          <span
+            className={cn(
+              "font-medium text-gray-800 text-sm",
+              !displayPrice && "invisible",
+            )}
+          >
             NT$ {amount.toLocaleString()}
           </span>
         </div>
         <div className="my-2 h-px w-full bg-gray-200" />
         <div className="flex items-center justify-between pt-1">
           <span className="font-bold text-gray-800 text-sm">結帳總額</span>
-          <span className="font-bold text-lg text-red-500">
+          <span
+            className={cn(
+              "font-bold text-lg text-red-500",
+              !displayPrice && "invisible",
+            )}
+          >
             NT$ {(final_amount || amount).toLocaleString()}
           </span>
         </div>
