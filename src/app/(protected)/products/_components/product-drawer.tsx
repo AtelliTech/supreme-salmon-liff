@@ -5,8 +5,6 @@ import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { useUserSettings } from "@/providers/user-settings-provider";
 import {
   Drawer,
   DrawerClose,
@@ -14,6 +12,8 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 
 export type Product = {
   id: string;
@@ -84,7 +84,12 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                 <p className="mt-1 text-gray-500 text-xs">
                   {product.description}
                 </p>
-                <p className={cn("mt-2 font-bold text-lg text-red-500", !displayPrice && "invisible")}>
+                <p
+                  className={cn(
+                    "mt-2 font-bold text-lg text-red-500",
+                    !displayPrice && "invisible",
+                  )}
+                >
                   NT$ {numeral(product.unit_price).format("0,0")}
                 </p>
               </div>
