@@ -97,7 +97,7 @@ export default function Page() {
       <div className="no-scrollbar mb-2 overflow-x-auto whitespace-nowrap border-gray-100 border-t bg-white px-3 py-3 shadow-sm">
         {TABS.map(({ key, label }) => {
           const isActive = filter === key;
-          const hasBadge = BADGE_STATUSES.includes(key);
+          const _hasBadge = BADGE_STATUSES.includes(key);
           return (
             <button
               key={key}

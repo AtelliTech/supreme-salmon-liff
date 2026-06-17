@@ -175,7 +175,6 @@ export function OrderCard({ order }: { order: Order }) {
       </div>
 
       <div className="flex items-center gap-3 p-4">
-      
         <div className={`flex-1`}>
           <h3 className="mb-1 line-clamp-1 font-medium text-gray-800 text-sm">
             {order.title}
@@ -183,7 +182,12 @@ export function OrderCard({ order }: { order: Order }) {
           <p className="mb-1 text-gray-500 text-xs">
             共 {order.itemCount} 件商品
           </p>
-          <p className={cn("font-bold text-gray-800 text-sm", !displayPrice && "hidden")}>
+          <p
+            className={cn(
+              "font-bold text-gray-800 text-sm",
+              !displayPrice && "hidden",
+            )}
+          >
             總計:{" "}
             <span className="text-red-500">
               NT$ {order.total.toLocaleString()}
