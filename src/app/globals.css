@@ -154,3 +154,28 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset;
   -webkit-text-fill-color: #374151;
 }
+
+@supports (-webkit-touch-callout: none) {
+  input[type="date"] {
+    /* 移除iOS原生外层干扰样式，但保留内部选择器交互 */
+    -webkit-appearance: none;
+    appearance: none;
+    /* 强制对齐文本输入框的内边距 */
+    /* padding: 0.5rem 0.6rem; */
+  }
+
+  /* 调整iOS日期输入框的内部编辑区域尺寸 */
+  input[type="date"]::-webkit-datetime-edit {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* 调整日期输入框的辅助控件（清除、下拉按钮）避免溢出 */
+  input[type="date"]::-webkit-clear-button,
+  input[type="date"]::-webkit-inner-spin-button,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-right: 0;
+    padding: 0.25rem;
+  }
+}
