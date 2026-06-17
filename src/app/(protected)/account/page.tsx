@@ -133,10 +133,7 @@ export default function Page() {
 
 function ProfileCard({ user }: { user: UserCheckData }) {
   const initial = user.display_name.charAt(0).toUpperCase();
-  const truncatedUid =
-    user.line_uid.length > 9
-      ? `${user.line_uid.slice(0, 9)}...`
-      : user.line_uid;
+  const lineUid = user?.line_uid;
 
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
@@ -149,7 +146,7 @@ function ProfileCard({ user }: { user: UserCheckData }) {
             {user.display_name}
           </p>
           <p className="text-gray-400 text-xs">
-            LINE 帳號已綁定：{truncatedUid}
+            LINE 帳號已綁定：{lineUid}
           </p>
         </div>
       </div>
