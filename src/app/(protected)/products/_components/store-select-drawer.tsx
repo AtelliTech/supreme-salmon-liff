@@ -84,7 +84,7 @@ export const StoreSelectDrawer = NiceModal.create<{ userId: string }>(
                 <p className="text-gray-500 text-sm">載入失敗，請重試</p>
                 <button
                   type="button"
-                  onClick={refetch}
+                  onClick={() => refetch()}
                   className="rounded-xl bg-salmon-500 px-5 py-2 font-semibold text-sm text-white"
                 >
                   重試
