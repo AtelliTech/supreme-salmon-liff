@@ -20,7 +20,9 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { Product } from "@/app/(protected)/products/_components/product-drawer";
+import { cn } from "@/lib/utils";
 import { useLIFF } from "@/providers/liff-providers";
+import { useUserSettings } from "@/providers/user-settings-provider";
 import { api } from "@/services/client";
 import type {
   OrderDetailItem,
@@ -79,6 +81,7 @@ export default function Page({
   const [initialized, setInitialized] = useState(false);
 
   const { liff } = useLIFF();
+  const { displayPrice } = useUserSettings();
   const { data: profile } = useQuery({
     queryKey: ["liff.profile"],
     queryFn: async () => {
@@ -324,7 +327,12 @@ export default function Page({
                     </p>
 
                     <div className="mt-2 flex items-center justify-between gap-2">
-                      <span className="font-bold text-salmon-600 text-sm">
+                      <span
+                        className={cn(
+                          "font-bold text-salmon-600 text-sm",
+                          !displayPrice && "invisible",
+                        )}
+                      >
                         NT$ {numeral(item.price).format("0,0")}
                       </span>
 
