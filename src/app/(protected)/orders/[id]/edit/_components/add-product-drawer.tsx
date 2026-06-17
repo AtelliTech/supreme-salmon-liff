@@ -20,6 +20,8 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { api } from "@/services/client";
+import { cn } from "@/lib/utils";
+import { useUserSettings } from "@/providers/user-settings-provider";
 
 export const AddProductDrawer = NiceModal.create<{
   userId: string;
@@ -27,6 +29,7 @@ export const AddProductDrawer = NiceModal.create<{
   onAddItem: (product: Product, qty: number) => void;
 }>(({ userId, selectedCustomer, onAddItem }) => {
   const modal = useModal();
+  const { displayPrice } = useUserSettings();
 
   const { data, status } = useQuery({
     queryKey: [userId, "products", selectedCustomer, "add-product-drawer"],
@@ -129,7 +132,7 @@ export const AddProductDrawer = NiceModal.create<{
                       <p className="line-clamp-1 text-gray-400 text-xs">
                         {product.description}
                       </p>
-                      <p className="font-bold text-red-500 text-sm">
+                      <p className={cn("font-bold text-red-500 text-sm", !displayPrice && "invisible")}>
                         NT$ {numeral(product.unit_price).format("0,0")}
                       </p>
                     </div>
