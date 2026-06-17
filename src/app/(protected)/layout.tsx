@@ -4,7 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useLIFF } from "@/providers/liff-providers";
+import { UserSettingsProvider } from "@/providers/user-settings-provider";
 import { api } from "@/services/client";
+
+type UserCheckResponse = {
+  data: {
+    is_customer: string;
+    display_price: "Y" | "N";
+    code: number;
+  };
+};
 
 export default function Layout({ children }: React.PropsWithChildren) {
   const router = useRouter();
@@ -26,7 +35,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
     queryFn: () =>
       api
         .checkUser(userId as string)
-        .json<{ data: { is_customer: string; code: number } }>(),
+        .json<UserCheckResponse>(),
     enabled: !!userId,
   });
 
@@ -44,5 +53,11 @@ export default function Layout({ children }: React.PropsWithChildren) {
     return null;
   }
 
-  return children;
+  const displayPrice = userCheck?.data?.display_price !== "N";
+
+  return (
+    <UserSettingsProvider displayPrice={displayPrice}>
+      {children}
+    </UserSettingsProvider>
+  );
 }
