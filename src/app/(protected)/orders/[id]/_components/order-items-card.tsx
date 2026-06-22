@@ -2,6 +2,7 @@
 
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import numeral from "numeral";
 import { cn } from "@/lib/utils";
 import { useUserSettings } from "@/providers/user-settings-provider";
 import type { OrderDetailItem } from "./types";
@@ -45,7 +46,16 @@ export function OrderItemsCard({ items, amount, final_amount }: Props) {
               <p className="mt-1 text-[11px] text-gray-500">
                 {item.product_desc}
               </p>
-              <div className="mt-auto flex items-end justify-between">
+              <span className="inline-flex py-2 text-gray-500 text-xs">
+                訂購重量:{" "}
+                <strong>
+                  {numeral(item.quantity * item.box_net_weight).format(
+                    "0,0.00",
+                  )}{" "}
+                  kg ± 10%
+                </strong>
+              </span>
+              <div className="mt-auto flex items-center justify-between">
                 <span
                   className={cn(
                     "font-bold text-red-500 text-sm",

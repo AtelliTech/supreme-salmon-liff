@@ -242,9 +242,13 @@ export default function Page() {
                       <div className="inline-flex overflow-hidden rounded-xl border border-gray-200">
                         <button
                           type="button"
-                          onClick={() =>
-                            updateQty(item.product_id, item.qty - 1)
-                          }
+                          onClick={() => {
+                            if (item.qty - 1 <= 0) {
+                              return;
+                            }
+
+                            updateQty(item.product_id, item.qty - 1);
+                          }}
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="減少數量"
                         >

@@ -132,6 +132,7 @@ export const AddProductDrawer = NiceModal.create<{
                       <p className="line-clamp-1 text-gray-400 text-xs">
                         {product.description}
                       </p>
+                      
                       <p
                         className={cn(
                           "font-bold text-red-500 text-sm",

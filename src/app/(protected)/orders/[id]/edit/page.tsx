@@ -326,11 +326,21 @@ export default function Page({
                       {item.product_desc}
                     </p>
 
+                    <span className="inline-flex py-2 text-gray-500 text-xs">
+                      訂購重量:{" "}
+                      <strong>
+                        {numeral(item.quantity * item.box_net_weight).format(
+                          "0,0.00",
+                        )}{" "}
+                        kg ± 10%
+                      </strong>
+                    </span>
+
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <span
                         className={cn(
-                          "font-bold text-salmon-600 text-sm",
-                          !displayPrice && "invisible",
+                          "font-bold text-red-500 text-sm",
+                          // !displayPrice && "invisible",
                         )}
                       >
                         NT$ {numeral(item.price).format("0,0")}
@@ -339,9 +349,13 @@ export default function Page({
                       <div className="inline-flex overflow-hidden rounded-xl border border-gray-200">
                         <button
                           type="button"
-                          onClick={() =>
-                            updateQty(item.product_id, item.quantity - 1)
-                          }
+                          onClick={() => {
+                            if (item.quantity - 1 <= 0) {
+                              return;
+                            }
+                            
+                            updateQty(item.product_id, item.quantity - 1);
+                          }}
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
                           aria-label="減少數量"
                         >
@@ -349,7 +363,7 @@ export default function Page({
                         </button>
                         <input
                           type="number"
-                          min="0"
+                          min="1"
                           step="1"
                           inputMode="numeric"
                           value={item.quantity}
