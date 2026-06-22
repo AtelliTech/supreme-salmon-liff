@@ -182,21 +182,13 @@ export function OrderCard({ order }: { order: Order }) {
           <p className="mb-2 text-gray-500 text-xs">
             共 {order.itemCount} 件商品
           </p>
-          <p
-            className={cn(
-              "font-bold text-gray-800 text-sm",
-            )}
-          >
+          <p className={cn("font-bold text-gray-800 text-sm")}>
             到貨時間:{" "}
             <span className="font-normal text-gray-500">
               {order.deliverDate} (預計)
             </span>
           </p>
-           <p
-            className={cn(
-              "font-bold text-gray-800 text-sm",
-            )}
-          >
+          <p className={cn("font-bold text-gray-800 text-sm")}>
             到貨地址:{" "}
             <span className="font-normal text-gray-500">
               {order.address?.address}

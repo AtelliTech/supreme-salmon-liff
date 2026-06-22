@@ -94,32 +94,40 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                 </p>
               </div>
             </div>
-
-            <div>
-              <h4 className="mb-2 font-semibold text-gray-800 text-sm">
-                購買數量
-              </h4>
-              <div className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
-                  aria-label="減少數量"
-                >
-                  <FontAwesomeIcon icon={faMinus} className="text-xs" />
-                </button>
-                <span className="w-16 bg-white text-center font-semibold text-gray-800">
-                  {qty}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setQty((q) => q + 1)}
-                  className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
-                  aria-label="增加數量"
-                >
-                  <FontAwesomeIcon icon={faPlus} className="text-xs" />
-                </button>
+            <div className="flex items-end justify-between">
+              <div>
+                <h4 className="mb-2 font-semibold text-gray-800 text-sm">
+                  購買數量
+                </h4>
+                <div className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
+                    aria-label="減少數量"
+                  >
+                    <FontAwesomeIcon icon={faMinus} className="text-xs" />
+                  </button>
+                  <span className="w-16 bg-white text-center font-semibold text-gray-800">
+                    {qty}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => q + 1)}
+                    className="h-10 w-10 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"
+                    aria-label="增加數量"
+                  >
+                    <FontAwesomeIcon icon={faPlus} className="text-xs" />
+                  </button>
+                </div>
               </div>
+              <span className="text-gray-500 text-xs">
+                訂購重量:{" "}
+                <strong>
+                  {numeral(qty * product.box_net_weight).format("0,0.00")} kg ±
+                  10%
+                </strong>
+              </span>
             </div>
 
             <button

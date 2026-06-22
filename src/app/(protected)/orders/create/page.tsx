@@ -203,28 +203,36 @@ export default function Page() {
                   </div>
 
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="line-clamp-1 font-medium text-gray-800 text-sm">
+                    <div className="flex items-start justify-between">
+                      <h4 className="line-clamp-1 break-all font-medium text-gray-800 text-sm">
                         {item.product_name}
                       </h4>
                       <button
                         type="button"
                         onClick={() => removeItem(item.product_id)}
-                        className="shrink-0 rounded-md bg-red-50 px-2 py-1 text-[11px] text-red-500"
+                        className="shrink-0 rounded-md bg-red-50 px-2 py-1 text-red-500 text-xs"
                         aria-label={`刪除 ${item.product_name}`}
                       >
                         刪除
                       </button>
                     </div>
 
-                    <p className="mt-0.5 text-[11px] text-gray-400">
-                      {item.product_desc}
-                    </p>
+                    <p className="text-gray-400 text-xs">{item.product_desc}</p>
+
+                    <span className="mt-2 inline-flex text-gray-500 text-xs">
+                      訂購重量:{" "}
+                      <strong>
+                        {numeral(item.qty * item.box_net_weight).format(
+                          "0,0.00",
+                        )}{" "}
+                        kg ± 10%
+                      </strong>
+                    </span>
 
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <span
                         className={cn(
-                          "font-bold text-salmon-600 text-sm",
+                          "font-bold text-red-500 text-sm",
                           !displayPrice && "invisible",
                         )}
                       >
