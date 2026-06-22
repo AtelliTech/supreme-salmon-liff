@@ -62,11 +62,11 @@ export type Order = {
   itemCount: number;
   total: number;
   timestamp: string;
+  deliverDate: string;
   grayscale?: boolean;
-} & (
-  | { singleImage: true; image: string; multiImage?: never; images?: never }
-  | { multiImage: true; images: string[]; singleImage?: never; image?: never }
-);
+  address?: { id: string; name: string; address: string };
+  number: string;
+};
 
 export const STATUS_CONFIG: Record<
   OrderStatus,
@@ -145,6 +145,7 @@ export function getOrderStatus(state: number): OrderStatus {
 export function mapApiOrder(order: ApiOrder): Order {
   const status = getOrderStatus(order.state);
   return {
+    ...order,
     id: order.number,
     status,
     ...STATUS_CONFIG[status],
@@ -152,8 +153,7 @@ export function mapApiOrder(order: ApiOrder): Order {
     itemCount: order.item_count,
     total: order.amount,
     timestamp: dayjs(order.order_date).format("YYYY/MM/DD HH:mm"),
-    singleImage: true,
-    image: "",
+    deliverDate: dayjs(order.deliver_date).format("YYYY/MM/DD HH:mm"),
   };
 }
 
@@ -176,15 +176,35 @@ export function OrderCard({ order }: { order: Order }) {
 
       <div className="flex items-center gap-3 p-4">
         <div className={`flex-1`}>
-          <h3 className="mb-1 line-clamp-1 font-medium text-gray-800 text-sm">
+          <h3 className="line-clamp-1 font-medium text-gray-800 text-sm">
             {order.title}
           </h3>
-          <p className="mb-1 text-gray-500 text-xs">
+          <p className="mb-2 text-gray-500 text-xs">
             共 {order.itemCount} 件商品
           </p>
           <p
             className={cn(
               "font-bold text-gray-800 text-sm",
+            )}
+          >
+            到貨時間:{" "}
+            <span className="font-normal text-gray-500">
+              {order.deliverDate} (預計)
+            </span>
+          </p>
+           <p
+            className={cn(
+              "font-bold text-gray-800 text-sm",
+            )}
+          >
+            到貨地址:{" "}
+            <span className="font-normal text-gray-500">
+              {order.address?.address}
+            </span>
+          </p>
+          <p
+            className={cn(
+              "mt-2 font-bold text-gray-800 text-sm",
               !displayPrice && "hidden",
             )}
           >
@@ -197,9 +217,9 @@ export function OrderCard({ order }: { order: Order }) {
       </div>
 
       <div className="flex items-center justify-between border-gray-100 border-t bg-white px-4 py-3">
-        <p className="text-gray-400 text-xs">{order.timestamp}</p>
+        <p className="text-gray-400 text-xs">{order.timestamp} 建立</p>
         <Link
-          href={`/orders/${order.id}`}
+          href={`/orders/${order.number}`}
           className="rounded-full border border-gray-200 px-3 py-1.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-50"
         >
           查看詳情
