@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { match, P } from "ts-pattern";
 import { NavBottom } from "@/components/nav-bottom";
 import { useCart } from "@/hooks/use-cart";
+import { cn } from "@/lib/utils";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
 import { ProductCard } from "./_components/product-card";
@@ -180,7 +181,12 @@ export default function Page() {
       <div className="category-container no-scrollbar mb-2 overflow-x-auto whitespace-nowrap bg-white px-3 py-3 shadow-sm">
         <button
           type="button"
-          className="category-item mr-2 inline-block rounded-full bg-salmon-500 px-4 py-1.5 font-medium text-sm text-white"
+          className={cn(
+            "category-item mr-2 inline-block rounded-full px-4 py-1.5 font-medium text-sm",
+            categoryId === undefined
+              ? "bg-salmon-500 text-white"
+              : "bg-gray-100 text-gray-700",
+          )}
           onClick={() => setCategoryId(undefined)}
         >
           全部商品
@@ -189,7 +195,12 @@ export default function Page() {
           <button
             key={category.id}
             type="button"
-            className="category-item mr-2 inline-block rounded-full bg-gray-100 px-4 py-1.5 font-medium text-gray-700 text-sm"
+            className={cn(
+              "category-item mr-2 inline-block rounded-full px-4 py-1.5 font-medium text-sm",
+              categoryId === category.id
+                ? "bg-salmon-500 text-white"
+                : "bg-gray-100 text-gray-700",
+            )}
             onClick={() => setCategoryId(category.id)}
           >
             {category.name}
