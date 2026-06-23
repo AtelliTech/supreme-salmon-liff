@@ -353,7 +353,7 @@ export default function Page({
                             if (item.quantity - 1 <= 0) {
                               return;
                             }
-                            
+
                             updateQty(item.product_id, item.quantity - 1);
                           }}
                           className="h-9 w-9 bg-gray-50 text-gray-600 transition-transform hover:bg-gray-100 active:scale-95"

@@ -72,10 +72,12 @@ export default function Page() {
     const customer = await NiceModal.show(StoreSelectDrawer, { userId });
     if (!customer) return;
 
-    if (activeCustomer && activeCustomer?.customer_id !== customer?.customer_id) {
-      window.confirm(
-        "切換店家將會清空目前購物車內的商品，確定要切換嗎？",
-      ) && clearCart();
+    if (
+      activeCustomer &&
+      activeCustomer?.customer_id !== customer?.customer_id
+    ) {
+      window.confirm("切換店家將會清空目前購物車內的商品，確定要切換嗎？") &&
+        clearCart();
     }
 
     applyCustomer(customer as Customer);
@@ -269,16 +271,15 @@ function CustomerListCard({
             <span className="font-semibold text-green-500 text-sm">
               目前使用中
             </span>
-          ) : (
-            null
-            // <button
-            //   type="button"
-            //   onClick={() => onSelect(c)}
-            //   className="font-semibold text-gray-800 text-sm"
-            // >
-            //   切換
-            // </button>
-          )}
+          ) : null
+          // <button
+          //   type="button"
+          //   onClick={() => onSelect(c)}
+          //   className="font-semibold text-gray-800 text-sm"
+          // >
+          //   切換
+          // </button>
+          }
         </div>
       ))}
     </div>

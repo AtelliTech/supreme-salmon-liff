@@ -42,7 +42,7 @@ export default function Page() {
     setSelectedCustomer(customer);
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: handleCustomerChange is defined in component scope
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleCustomerChange is defined in component scop
   useEffect(() => {
     if (!userId) return;
 
@@ -72,6 +72,24 @@ export default function Page() {
     runStoreSelection();
   }, [userId]);
 
+  const { data: categoriesRes } = useQuery({
+    queryKey: [userId, "categories", selectedCustomer],
+    queryFn: async () => {
+      if (!userId || !selectedCustomer) throw new Error("Not ready");
+      return api
+        .getCategories(userId, {
+          customer_id: selectedCustomer.customer_id,
+          division_id: selectedCustomer.division_id,
+        })
+        .json<ProductsResponse>();
+    },
+    enabled: !!userId && !!selectedCustomer,
+  });
+
+  const categories = categoriesRes?.data ?? [];
+
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
+
   const { data: productsRes, status } = useQuery({
     queryKey: [userId, "products", selectedCustomer],
     queryFn: async () => {
@@ -80,6 +98,7 @@ export default function Page() {
         .getProducts(userId, {
           customer_id: selectedCustomer.customer_id,
           division_id: selectedCustomer.division_id,
+          category_id: categoryId,
         })
         .json<ProductsResponse>();
     },
@@ -162,9 +181,20 @@ export default function Page() {
         <button
           type="button"
           className="category-item mr-2 inline-block rounded-full bg-salmon-500 px-4 py-1.5 font-medium text-sm text-white"
+          onClick={() => setCategoryId(undefined)}
         >
           全部商品
         </button>
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            className="category-item mr-2 inline-block rounded-full bg-gray-100 px-4 py-1.5 font-medium text-gray-700 text-sm"
+            onClick={() => setCategoryId(category.id)}
+          >
+            {category.name}
+          </button>
+        ))}
       </div>
 
       <main className="product-container grid grid-cols-2 gap-3 p-3">

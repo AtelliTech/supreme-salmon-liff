@@ -40,6 +40,13 @@ export const api = {
     });
   },
 
+  getCategories(lineUserId: string, searchParams = {}, requestOptions = {}) {
+    return client.get(`api/liff/${lineUserId}/categories`, {
+      searchParams,
+      ...requestOptions,
+    });
+  },
+
   createOrder(lineUserId: string, payload: object, requestOptions = {}) {
     return client.post(`api/liff/${lineUserId}/orders`, {
       json: payload,
