@@ -30,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="product-item flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-      <div className="relative pb-[100%]">
+      <div className="relative bg-muted/50 pb-[100%]">
         {product.img_url ? (
           <img
             src={product.img_url}

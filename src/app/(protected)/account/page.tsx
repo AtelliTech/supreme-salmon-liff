@@ -267,18 +267,19 @@ function CustomerListCard({
             </p>
             <p className="text-gray-400 text-xs">{c.division_name}</p>
           </div>
-          {isActive(c) ? (
-            <span className="font-semibold text-green-500 text-sm">
-              目前使用中
-            </span>
-          ) : null
-          // <button
-          //   type="button"
-          //   onClick={() => onSelect(c)}
-          //   className="font-semibold text-gray-800 text-sm"
-          // >
-          //   切換
-          // </button>
+          {
+            isActive(c) ? (
+              <span className="font-semibold text-green-500 text-sm">
+                目前使用中
+              </span>
+            ) : null
+            // <button
+            //   type="button"
+            //   onClick={() => onSelect(c)}
+            //   className="font-semibold text-gray-800 text-sm"
+            // >
+            //   切換
+            // </button>
           }
         </div>
       ))}
