@@ -123,8 +123,11 @@ export default function Page() {
 
   if (!selectedCustomer) return null;
 
+  const canSubmit =
+    items.length > 0 && deliverDate !== "" && selectedAddress !== "";
+
   function handleSubmit() {
-    if (!userId || !selectedCustomer || items.length === 0) return;
+    if (!userId || !selectedCustomer || !canSubmit) return;
 
     const payload: CreateOrderPayload = {
       deliver_date: deliverDate,
@@ -147,7 +150,6 @@ export default function Page() {
         remark: item.remark,
       })),
     };
-    console.log(payload);
 
     mutation.mutate(payload);
     confirmDialogRef.current?.close();
@@ -381,7 +383,7 @@ export default function Page() {
         <div className="p-3">
           <button
             type="button"
-            disabled={items.length === 0 || mutation.isPending}
+            disabled={!canSubmit || mutation.isPending}
             onClick={() => confirmDialogRef.current?.showModal()}
             aria-label="開啟送出訂單確認視窗"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-salmon-500 py-3.5 font-bold text-sm text-white shadow-md transition-all hover:bg-salmon-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 lg:text-base"
