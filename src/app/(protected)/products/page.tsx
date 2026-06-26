@@ -92,7 +92,7 @@ export default function Page() {
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
 
   const { data: productsRes, status } = useQuery({
-    queryKey: [userId, "products", selectedCustomer],
+    queryKey: [userId, "products", selectedCustomer, categoryId],
     queryFn: async () => {
       if (!userId || !selectedCustomer) throw new Error("Not ready");
       return api
