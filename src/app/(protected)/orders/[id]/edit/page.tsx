@@ -340,7 +340,7 @@ export default function Page({
                       <span
                         className={cn(
                           "font-bold text-red-500 text-sm",
-                          // !displayPrice && "invisible",
+                          !displayPrice && "invisible",
                         )}
                       >
                         NT$ {numeral(item.price).format("0,0")}
