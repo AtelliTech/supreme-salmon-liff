@@ -33,6 +33,38 @@ type GetUserAddressesResponse = {
   data: Address[];
 };
 
+function QtyInput({
+  qty,
+  onCommit,
+}: {
+  qty: number;
+  onCommit: (qty: number) => void;
+}) {
+  const [text, setText] = useState(String(qty));
+
+  useEffect(() => {
+    setText(String(qty));
+  }, [qty]);
+
+  return (
+    <input
+      type="number"
+      min="1"
+      step="1"
+      inputMode="numeric"
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      onBlur={() => {
+        const parsed = Math.max(1, Math.floor(Number(text)) || 1);
+        setText(String(parsed));
+        onCommit(parsed);
+      }}
+      className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
+      aria-label="輸入數量"
+    />
+  );
+}
+
 type CreateOrderPayload = {
   deliver_date: string;
   address_id: string;
@@ -256,23 +288,9 @@ export default function Page() {
                         >
                           <FontAwesomeIcon icon={faMinus} className="text-xs" />
                         </button>
-                        <input
-                          type="number"
-                          min="1"
-                          step="1"
-                          inputMode="numeric"
-                          value={item.qty}
-                          onChange={(e) => {
-                            if (e.target.value === "") {
-                              return;
-                            }
-                            updateQty(
-                              item.product_id,
-                              Math.max(1, Math.floor(Number(e.target.value))),
-                            );
-                          }}
-                          className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
-                          aria-label="輸入數量"
+                        <QtyInput
+                          qty={item.qty}
+                          onCommit={(qty) => updateQty(item.product_id, qty)}
                         />
                         <button
                           type="button"
