@@ -258,16 +258,19 @@ export default function Page() {
                         </button>
                         <input
                           type="number"
-                          min="0"
+                          min="1"
                           step="1"
                           inputMode="numeric"
                           value={item.qty}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            if (e.target.value === "") {
+                              return;
+                            }
                             updateQty(
                               item.product_id,
-                              Math.max(0, Math.floor(Number(e.target.value))),
-                            )
-                          }
+                              Math.max(1, Math.floor(Number(e.target.value))),
+                            );
+                          }}
                           className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
                           aria-label="輸入數量"
                         />

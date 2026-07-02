@@ -108,9 +108,16 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                   >
                     <FontAwesomeIcon icon={faMinus} className="text-xs" />
                   </button>
-                  <span className="w-16 bg-white text-center font-semibold text-gray-800">
-                    {qty}
-                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={qty}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      setQty(value === "" ? 1 : Math.max(1, Number(value)));
+                    }}
+                    className="h-10 w-16 bg-white text-center font-semibold text-gray-800 focus:outline-none"
+                  />
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
