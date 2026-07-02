@@ -7,7 +7,6 @@ import { use, useRef } from "react";
 import { match, P } from "ts-pattern";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
-import { CancelOrderDialog } from "./_components/cancel-order-dialog";
 import { OrderDeliveryCard } from "./_components/order-delivery-card";
 import { OrderDetailSkeleton } from "./_components/order-detail-skeleton";
 import { OrderInfoCard } from "./_components/order-info-card";
@@ -22,7 +21,6 @@ export default function Page({
 }) {
   const { id } = use(params);
   const orderNumber = typeof id === "string" ? id : undefined;
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const { liff } = useLIFF();
   const { data: profile } = useQuery({
@@ -94,14 +92,6 @@ export default function Page({
       </main>
 
       <div className="fixed bottom-0 left-0 z-40 flex w-full gap-2.5 border-gray-200 border-t bg-white/95 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] backdrop-blur-sm">
-        <button
-          type="button"
-          onClick={() => dialogRef.current?.showModal()}
-          aria-label="開啟取消訂單確認視窗"
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-gray-300 bg-white py-2.5 font-bold text-gray-700 text-sm shadow-sm transition-colors hover:bg-gray-50 active:scale-95"
-        >
-          取消訂單
-        </button>
         <a
           href={`/orders/${orderNumber}/edit`}
           className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-salmon-500 py-2.5 text-center font-bold text-sm text-white shadow-sm transition-colors hover:bg-salmon-600 active:scale-95"
@@ -109,8 +99,6 @@ export default function Page({
           <FontAwesomeIcon icon={faEdit} /> 修改訂單
         </a>
       </div>
-
-      <CancelOrderDialog ref={dialogRef} />
     </div>
   );
 }
