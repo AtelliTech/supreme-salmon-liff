@@ -3,7 +3,7 @@
 import { faChevronLeft, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { use, useRef } from "react";
+import { use } from "react";
 import { match, P } from "ts-pattern";
 import { useLIFF } from "@/providers/liff-providers";
 import { api } from "@/services/client";
@@ -91,14 +91,16 @@ export default function Page({
           .otherwise(() => null)}
       </main>
 
-      <div className="fixed bottom-0 left-0 z-40 flex w-full gap-2.5 border-gray-200 border-t bg-white/95 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] backdrop-blur-sm">
-        <a
-          href={`/orders/${orderNumber}/edit`}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-salmon-500 py-2.5 text-center font-bold text-sm text-white shadow-sm transition-colors hover:bg-salmon-600 active:scale-95"
-        >
-          <FontAwesomeIcon icon={faEdit} /> 修改訂單
-        </a>
-      </div>
+      {order?.state === 0 && (
+        <div className="fixed bottom-0 left-0 z-40 flex w-full gap-2.5 border-gray-200 border-t bg-white/95 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] backdrop-blur-sm">
+          <a
+            href={`/orders/${orderNumber}/edit`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-salmon-500 py-2.5 text-center font-bold text-sm text-white shadow-sm transition-colors hover:bg-salmon-600 active:scale-95"
+          >
+            <FontAwesomeIcon icon={faEdit} /> 修改訂單
+          </a>
+        </div>
+      )}
     </div>
   );
 }
