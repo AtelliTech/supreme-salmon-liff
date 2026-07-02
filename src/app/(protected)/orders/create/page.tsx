@@ -17,6 +17,7 @@ import numeral from "numeral";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { loadCustomer } from "@/app/(protected)/products/_components/store-select-drawer";
+import { QtyInput } from "@/components/qty-input";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import { useLIFF } from "@/providers/liff-providers";
@@ -32,38 +33,6 @@ type Address = {
 type GetUserAddressesResponse = {
   data: Address[];
 };
-
-function QtyInput({
-  qty,
-  onCommit,
-}: {
-  qty: number;
-  onCommit: (qty: number) => void;
-}) {
-  const [text, setText] = useState(String(qty));
-
-  useEffect(() => {
-    setText(String(qty));
-  }, [qty]);
-
-  return (
-    <input
-      type="number"
-      min="1"
-      step="1"
-      inputMode="numeric"
-      value={text}
-      onChange={(e) => setText(e.target.value)}
-      onBlur={() => {
-        const parsed = Math.max(1, Math.floor(Number(text)) || 1);
-        setText(String(parsed));
-        onCommit(parsed);
-      }}
-      className="w-14 bg-white text-center font-semibold text-gray-800 focus:outline-none"
-      aria-label="輸入數量"
-    />
-  );
-}
 
 type CreateOrderPayload = {
   deliver_date: string;

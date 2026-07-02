@@ -5,6 +5,7 @@ import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
 import { useState } from "react";
+import { QtyInput } from "@/components/qty-input";
 import {
   Drawer,
   DrawerClose,
@@ -108,16 +109,7 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                   >
                     <FontAwesomeIcon icon={faMinus} className="text-xs" />
                   </button>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={qty}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
-                      setQty(value === "" ? 1 : Math.max(1, Number(value)));
-                    }}
-                    className="h-10 w-16 bg-white text-center font-semibold text-gray-800 focus:outline-none"
-                  />
+                  <QtyInput qty={qty} onCommit={setQty} className="h-10 w-16" />
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
