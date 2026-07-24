@@ -5,7 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import numeral from "numeral";
 import { useCart } from "@/hooks/use-cart";
-import { cn } from "@/lib/utils";
+import { cn, formatProductDescription } from "@/lib/utils";
 import { useUserSettings } from "@/providers/user-settings-provider";
 import {
   type Product,
@@ -45,8 +45,8 @@ export function ProductCard({ product }: { product: Product }) {
         <h3 className="mb-1 line-clamp-2 font-medium text-gray-800 text-sm leading-snug">
           {product.name}
         </h3>
-        <p className="product-description mb-0.5 text-gray-400 text-xs">
-          {product.description}
+        <p className="product-description mb-0.5 text-gray-400 text-xs" dangerouslySetInnerHTML={{ __html: formatProductDescription(product.description) }}>
+      
         </p>
         <div className="mt-auto flex items-end justify-between pt-2">
           <p

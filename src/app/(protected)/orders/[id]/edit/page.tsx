@@ -20,7 +20,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { Product } from "@/app/(protected)/products/_components/product-drawer";
-import { cn } from "@/lib/utils";
+import { cn, formatProductDescription } from "@/lib/utils";
 import { useLIFF } from "@/providers/liff-providers";
 import { useUserSettings } from "@/providers/user-settings-provider";
 import { api } from "@/services/client";

@@ -19,7 +19,7 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { cn } from "@/lib/utils";
+import { cn, formatProductDescription } from "@/lib/utils";
 import { useUserSettings } from "@/providers/user-settings-provider";
 import { api } from "@/services/client";
 
@@ -129,8 +129,7 @@ export const AddProductDrawer = NiceModal.create<{
                       <p className="line-clamp-2 font-medium text-gray-800 text-sm">
                         {product.name}
                       </p>
-                      <p className="line-clamp-1 text-gray-400 text-xs">
-                        {product.description}
+                      <p className="line-clamp-1 text-gray-400 text-xs" dangerouslySetInnerHTML={{ __html: formatProductDescription(product.description) }} >
                       </p>
 
                       <p
