@@ -129,8 +129,12 @@ export const AddProductDrawer = NiceModal.create<{
                       <p className="line-clamp-2 font-medium text-gray-800 text-sm">
                         {product.name}
                       </p>
-                      <p className="line-clamp-1 text-gray-400 text-xs" dangerouslySetInnerHTML={{ __html: formatProductDescription(product.description) }} >
-                      </p>
+                      <p
+                        className="line-clamp-1 text-gray-400 text-xs"
+                        dangerouslySetInnerHTML={{
+                          __html: formatProductDescription(product.description),
+                        }}
+                      ></p>
 
                       <p
                         className={cn(

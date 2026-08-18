@@ -82,9 +82,12 @@ export const ProductDrawer = NiceModal.create<{ product: Product }>(
                 <h3 className="font-semibold text-gray-800 text-sm leading-snug">
                   {product.name}
                 </h3>
-                <p className="mt-1 text-gray-500 text-xs" dangerouslySetInnerHTML={{ __html: formatProductDescription(product.description) }}>
-
-                </p>
+                <p
+                  className="mt-1 text-gray-500 text-xs"
+                  dangerouslySetInnerHTML={{
+                    __html: formatProductDescription(product.description),
+                  }}
+                ></p>
                 <p
                   className={cn(
                     "mt-2 font-bold text-lg text-red-500",

@@ -66,6 +66,18 @@ export const api = {
     });
   },
 
+  cancelOrder(
+    lineUserId: string,
+    number: string,
+    payload: object,
+    requestOptions = {},
+  ) {
+    return client.post(`api/liff/${lineUserId}/orders/${number}/cancel`, {
+      json: payload,
+      ...requestOptions,
+    });
+  },
+
   getOrders(lineUserId: string, searchParams = {}, requestOptions = {}) {
     return client.get(`api/liff/${lineUserId}/orders`, {
       searchParams,
